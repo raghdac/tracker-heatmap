@@ -11,7 +11,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-  /* Layout: one reading column that follows the argument of the thesis, with interactive panels set into it. */
+  /* Layout: one short reading column: question, two videos with one chart each, speed, findings. */
   :root {
     --bg: #f6f7f5;
     --surface: #ffffff;
@@ -19,8 +19,7 @@
     --ink-2: #52514e;
     --rule: #e1e0d9;
     --axis: #c3c2b7;
-    --accent: #1f3f66;
-    --accent-soft: #e6ecf3;
+    --accent: #00446a;
     --c-baseline: #898781;
     --c-deepsort: #2a78d6;
     --c-bytetrack: #eb6834;
@@ -29,95 +28,56 @@
     --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
     color-scheme: light; /* one light look by choice: it is shown on a projector next to light slides */
   }
-  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; }
-  .page { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px;
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.55; }
+  .page { max-width: 920px; margin: 0 auto; padding-block: 40px 56px;
           padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-          display: flex; flex-direction: column; gap: 56px; }
-  h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 600; line-height: 1.2; }
-  h1 { font-size: clamp(1.7rem, 4vw, 2.5rem); max-width: 22ch; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.05rem; }
-  p { margin: 0; max-width: 68ch; }
+          display: flex; flex-direction: column; gap: 48px; }
+  h1, h2 { text-wrap: balance; margin: 0; font-weight: 600; line-height: 1.2; }
+  h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); max-width: 22ch; }
+  h2 { font-size: 1.45rem; }
+  p { margin: 0; max-width: 62ch; }
   a { color: var(--accent); }
   .eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
   .muted { color: var(--ink-2); }
-  .small { font-size: 0.875rem; }
-  section, header { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  section, header { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 2px 20px; font-size: 0.9rem; color: var(--ink-2); }
 
-  .meta { display: flex; flex-wrap: wrap; gap: 4px 24px; font-size: 0.9rem; color: var(--ink-2); }
-  .lead { font-size: 1.15rem; max-width: 60ch; }
-
-  .pipeline { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
-  .step { flex: 1 1 150px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px;
-          display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .step strong { font-weight: 600; }
-  .step span { font-size: 0.85rem; color: var(--ink-2); }
+  .pipeline { display: flex; flex-wrap: wrap; gap: 8px; }
+  .step { flex: 1 1 130px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px;
+          display: flex; flex-direction: column; gap: 2px; min-width: 0; font-weight: 600; }
+  .step span { font-size: 0.85rem; font-weight: 400; color: var(--ink-2); }
   .step.swap { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
-  .arrow { align-self: center; color: var(--axis); font-family: var(--mono); }
-  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--ink); }
-  .dot { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
   .bg-baseline { background: var(--c-baseline); } .bg-deepsort { background: var(--c-deepsort); }
   .bg-bytetrack { background: var(--c-bytetrack); } .bg-botsort { background: var(--c-botsort); }
 
-  .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 20px;
-           display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-  .controls { display: flex; flex-wrap: wrap; gap: 12px 24px; }
-  .control { display: flex; flex-direction: column; gap: 6px; }
-  .control > span { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  video { width: 100%; height: auto; aspect-ratio: 16 / 9; background: #0b0b0b; border-radius: 6px; display: block; }
   .seg { display: flex; flex-wrap: wrap; gap: 4px; }
   .seg button { font: inherit; font-size: 0.9rem; padding: 6px 12px; border: 1px solid var(--axis); border-radius: 4px;
                 background: var(--surface); color: var(--ink); cursor: pointer; }
   .seg button:hover { border-color: var(--accent); }
   .seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #ffffff; }
-  .seg button:focus-visible, video:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .seg button:focus-visible, video:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+  .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 18px;
+           display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .panel-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; font-weight: 600; }
   .bars { display: flex; flex-direction: column; gap: 10px; }
-  .bar-row { display: grid; grid-template-columns: minmax(96px, 130px) 1fr 64px; align-items: center; gap: 12px; }
+  .bar-row { display: grid; grid-template-columns: minmax(96px, 130px) 1fr 60px; align-items: center; gap: 12px; }
   .bar-label { font-size: 0.92rem; display: flex; align-items: center; gap: 8px; min-width: 0; }
   .bar-track { height: 18px; border-left: 1px solid var(--axis); background: linear-gradient(to right, var(--rule) 1px, transparent 1px) 0 0 / 25% 100%; }
   .bar { display: block; height: 100%; border-radius: 0 4px 4px 0; transition: width 0.35s ease; }
   .bar-value { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.92rem; text-align: right; }
-  .scale-note { font-family: var(--mono); font-size: 0.75rem; color: var(--ink-2); }
-  .reading { border-left: 3px solid var(--accent); padding-left: 12px; max-width: 70ch; }
+  .note { font-size: 0.85rem; color: var(--ink-2); }
 
-  details { font-size: 0.9rem; }
-  summary { cursor: pointer; color: var(--accent); width: fit-content; }
-  .table-wrap { overflow-x: auto; margin-top: 10px; }
-  table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.875rem; }
-  th, td { padding: 6px 14px 6px 0; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
-  th:first-child, td:first-child { text-align: left; }
-  th { font-weight: 500; color: var(--ink-2); }
+  .findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .finding { display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--accent); padding-top: 10px; }
+  .finding strong { font-weight: 600; }
+  .finding span { font-size: 0.92rem; color: var(--ink-2); }
+  ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; max-width: 62ch; }
+  footer { border-top: 1px solid var(--rule); padding-top: 14px; font-size: 0.8rem; color: var(--ink-2); display: flex; flex-direction: column; gap: 4px; }
 
-  video { width: 100%; height: auto; aspect-ratio: 16 / 9; background: #0b0b0b; border-radius: 6px; display: block; }
-  .watch { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 24px; font-size: 0.92rem; }
-  .watch div { display: flex; flex-direction: column; gap: 2px; }
-  .watch strong { font-weight: 600; }
-
-  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .pair figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  .pair img { width: 100%; height: auto; border-radius: 4px; display: block; background: var(--rule); }
-  .pair figcaption { font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-  .stats { display: flex; flex-wrap: wrap; gap: 8px 32px; }
-  .stat { display: flex; flex-direction: column; }
-  .stat b { font-family: var(--mono); font-weight: 500; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
-  .stat span { font-size: 0.8rem; color: var(--ink-2); }
-
-  .scatter { width: 100%; height: auto; max-width: 720px; }
-  .scatter text { font-family: var(--mono); font-size: 12px; fill: var(--ink-2); }
-  .scatter .name { font-family: var(--sans); font-size: 13px; fill: var(--ink); }
-
-  .findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
-  .finding { display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--ink); padding-top: 12px; }
-  .limits { display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; list-style: none; max-width: 72ch; }
-  .limits li { padding-left: 16px; border-left: 1px solid var(--axis); }
-  footer { border-top: 1px solid var(--rule); padding-top: 16px; font-size: 0.82rem; color: var(--ink-2); display: flex; flex-direction: column; gap: 6px; }
-
-  @media (max-width: 1000px) { .arrow { display: none; } }
-  @media (max-width: 640px) {
-    .pair { grid-template-columns: 1fr; }
-    .bar-row { grid-template-columns: 92px 1fr 52px; gap: 8px; }
-    .panel { padding: 14px; }
-  }
+  @media (max-width: 640px) { .bar-row { grid-template-columns: 92px 1fr 50px; gap: 8px; } .panel { padding: 14px; } }
   @media (prefers-reduced-motion: reduce) { .bar { transition: none; } }
 </style>
 
@@ -125,8 +85,8 @@
 
   <header>
     <span class="eyebrow">Undergraduate thesis · results seminar · draft results</span>
-    <h1>Which tracker gives the most faithful customer heatmap?</h1>
-    <p class="lead">One detector, three trackers, the same videos. This page replays the saved outputs of the experiment, so every box, heatmap and number shown here is the one reported in the thesis.</p>
+    <h1>Which tracker gives the best customer heatmap?</h1>
+    <p>One detector, three trackers, the same videos. Everything here is replayed from the saved experiment outputs.</p>
     <div class="meta">
       <span>R. Raghda Hassa Parardhya Cornika</span>
       <span>Electronics and Instrumentation, Universitas Gadjah Mada</span>
@@ -135,135 +95,69 @@
   </header>
 
   <section>
-    <span class="eyebrow">Method</span>
-    <h2>Only the tracker changes</h2>
-    <p>Every configuration reads the same cached YOLOv8n detections and feeds the same heatmap procedure. A detection-only baseline skips the tracker, so the gain from tracking can be measured against it.</p>
-    <div class="pipeline" role="img" aria-label="Pipeline: video frames, then the YOLOv8n detector, then one of three trackers, then a KDE heatmap, then comparison with the ground truth">
-      <div class="step"><strong>Video frames</strong><span>MOT20 (crowded, static camera) and MOT17 (moving camera)</span></div>
-      <span class="arrow">→</span>
-      <div class="step"><strong>YOLOv8n</strong><span>COCO weights, no fine-tuning, 640 px input</span></div>
-      <span class="arrow">→</span>
-      <div class="step swap"><strong>Tracker</strong>
-        <span class="chip"><i class="dot bg-deepsort"></i>DeepSORT</span>
-        <span class="chip"><i class="dot bg-bytetrack"></i>ByteTrack</span>
-        <span class="chip"><i class="dot bg-botsort"></i>BoT-SORT</span>
-      </div>
-      <span class="arrow">→</span>
-      <div class="step"><strong>Heatmap</strong><span>Foot points smoothed with a Gaussian KDE, Scott bandwidth</span></div>
-      <span class="arrow">→</span>
-      <div class="step"><strong>Evaluation</strong><span>TrackEval for tracks; SSIM, JS and count error for heatmaps</span></div>
+    <h2>Method: only the tracker changes</h2>
+    <div class="pipeline" role="img" aria-label="Pipeline: video, YOLOv8n detector, one of three trackers, heatmap, comparison with ground truth">
+      <div class="step">Video<span>MOT20, MOT17</span></div>
+      <div class="step">YOLOv8n<span>same detections for all</span></div>
+      <div class="step swap">Tracker<span>DeepSORT, ByteTrack or BoT-SORT</span></div>
+      <div class="step">Heatmap<span>foot points, Gaussian KDE</span></div>
+      <div class="step">Compare<span>with the ground truth</span></div>
     </div>
   </section>
 
   <section>
-    <span class="eyebrow">Result 1 · tracking</span>
-    <h2>The three trackers on the same frames</h2>
-    <p>Sequence MOT17-11, filmed with a moving camera in a shopping mall. Box colour is the identity each tracker assigned.</p>
-    <video id="v-tracking" controls muted loop playsinline preload="metadata" poster="video/tracking_MOT17-11.jpg" src="video/tracking_MOT17-11.mp4"></video>
-    <div class="watch">
-      <div><strong>Colour changes</strong><span class="muted">A person whose box changes colour was given a new identity: an ID switch.</span></div>
-      <div><strong>"Tracked now" against the ground truth</strong><span class="muted">Small or far people are missed by every tracker, because the detector did not find them.</span></div>
-      <div><strong>"IDs so far"</strong><span class="muted">More identities than people means tracks were broken into fragments.</span></div>
-    </div>
-
+    <h2>1. Tracking</h2>
+    <p class="muted">Box colour is the identity. A colour change is an ID switch.</p>
+    <video controls muted loop playsinline preload="metadata" poster="video/tracking_MOT17-11.jpg" src="video/tracking_MOT17-11.mp4"></video>
     <div class="panel">
-      <h3>Tracking accuracy, all sequences of a scenario combined</h3>
-      <div class="controls">
-        <div class="control"><span>Scenario</span><div class="seg" id="t-scenario"></div></div>
-        <div class="control"><span>Metric</span><div class="seg" id="t-metric"></div></div>
-      </div>
+      <div class="panel-head"><span>Tracking accuracy (HOTA, higher is better)</span><div class="seg" id="t-scenario"></div></div>
       <div class="bars" id="t-bars"></div>
-      <span class="scale-note" id="t-scale"></span>
-      <p class="reading" id="t-reading"></p>
-      <details><summary>Show all numbers for this scenario</summary><div class="table-wrap" id="t-table"></div></details>
+      <p class="note" id="t-reading"></p>
     </div>
   </section>
 
   <section>
-    <span class="eyebrow">Result 2 · heatmaps</span>
-    <h2>Heatmaps building up over a sequence</h2>
-    <p>Sequence MOT20-02 as a time-lapse. Each panel accumulates the foot positions of one configuration and smooths them the same way. Switch the detector input size to see what changes the picture most.</p>
-    <div class="controls">
-      <div class="control"><span>Detector input size</span><div class="seg" id="v-res"></div></div>
-    </div>
+    <h2>2. Heatmaps</h2>
+    <p class="muted">Time-lapse of one sequence. Switch the detector input size to see what changes most.</p>
+    <div class="seg" id="h-res"></div>
     <video id="v-heatmap" controls muted loop playsinline preload="metadata"></video>
-
     <div class="panel">
-      <h3>Heatmap fidelity against the ground truth, crowded scenario</h3>
-      <div class="controls">
-        <div class="control"><span>Detector input size</span><div class="seg" id="h-res"></div></div>
-        <div class="control"><span>Metric</span><div class="seg" id="h-metric"></div></div>
-      </div>
+      <div class="panel-head"><span>Similarity to the ground-truth heatmap (SSIM, higher is better)</span></div>
       <div class="bars" id="h-bars"></div>
-      <span class="scale-note" id="h-scale"></span>
-      <p class="reading" id="h-reading"></p>
-      <details><summary>Show all numbers</summary><div class="table-wrap" id="h-table"></div></details>
-    </div>
-
-    <div class="panel">
-      <h3>Compare any heatmap with its ground truth</h3>
-      <div class="controls">
-        <div class="control"><span>Sequence</span><div class="seg" id="c-seq"></div></div>
-        <div class="control"><span>Detector input size</span><div class="seg" id="c-res"></div></div>
-        <div class="control"><span>Configuration</span><div class="seg" id="c-config"></div></div>
-      </div>
-      <div class="pair">
-        <figure><img id="c-gt" alt="Ground-truth heatmap" loading="lazy"><figcaption><i class="dot bg-baseline"></i>Ground truth</figcaption></figure>
-        <figure><img id="c-img" alt="" loading="lazy"><figcaption id="c-cap"></figcaption></figure>
-      </div>
-      <div class="stats" id="c-stats"></div>
-      <p class="small muted">Each image is scaled to its own maximum, so the colours show where people were relative to the busiest spot, not how many people were counted. The count error is reported separately.</p>
+      <p class="note" id="h-reading"></p>
     </div>
   </section>
 
   <section>
-    <span class="eyebrow">Result 3 · cost</span>
-    <h2>Accuracy against speed</h2>
-    <p>Speed is measured end to end on the experiment PC (GTX 1650 SUPER for the detector, CPU for the trackers) at 640 px.</p>
+    <h2>3. Speed</h2>
     <div class="panel">
-      <div class="controls">
-        <div class="control"><span>Scenario</span><div class="seg" id="s-scenario"></div></div>
-      </div>
-      <svg class="scatter" id="s-chart" viewBox="0 0 720 360" role="img" aria-label="Scatter chart of HOTA against frames per second for the three trackers"></svg>
-      <p class="reading" id="s-reading"></p>
+      <div class="panel-head"><span>Frames per second, crowded scenes</span></div>
+      <div class="bars" id="s-bars"></div>
+      <p class="note">Detector on a GTX 1650 SUPER, trackers on the CPU. DeepSORT's appearance model runs on the CPU. Bars run from 0 to 80.</p>
     </div>
   </section>
 
   <section>
-    <span class="eyebrow">Findings</span>
-    <h2>What the results say</h2>
+    <h2>Findings</h2>
     <div class="findings">
-      <div class="finding">
-        <h3>BoT-SORT leads, by a small margin</h3>
-        <p class="small">Combined HOTA is 0.200 for BoT-SORT, 0.194 for ByteTrack and 0.176 for DeepSORT in the crowded scenario, and 0.391, 0.351 and 0.384 with a moving camera. ByteTrack falls behind when the camera moves, because it has no camera-motion compensation.</p>
-      </div>
-      <div class="finding">
-        <h3>Tracking improves the heatmap only slightly</h3>
-        <p class="small">Frame-weighted SSIM is 0.683 without any tracker and 0.702 with the best one. DeepSORT (0.682) does not improve on the baseline. A better tracking score does go with a better heatmap, but the differences are small.</p>
-      </div>
-      <div class="finding">
-        <h3>The detector limits everything</h3>
-        <p class="small">At 640 px the trackers recover about a fifth of the people in the crowded scenes. At 1280 px recall rises to about a half, SSIM to 0.88–0.89 and the count error falls from about 60% to about 22%. The tracker order stays the same.</p>
-      </div>
+      <div class="finding"><strong>BoT-SORT is the most accurate</strong><span>But only by a small margin.</span></div>
+      <div class="finding"><strong>Tracking barely changes the heatmap</strong><span>SSIM 0.683 without a tracker, 0.702 with the best one.</span></div>
+      <div class="finding"><strong>The detector matters most</strong><span>A 1280 px input lifts SSIM to about 0.89.</span></div>
     </div>
   </section>
 
   <section>
-    <span class="eyebrow">Scope</span>
-    <h2>What these results do not show</h2>
-    <ul class="limits">
-      <li>Each scenario has three sequences that meet the selection criteria. With three sequences the comparison is descriptive; no claim of statistical significance is made.</li>
-      <li>MOT17 and MOT20 are pedestrian benchmarks, not shop recordings. The retail scenario of the thesis is still to be evaluated.</li>
-      <li>YOLOv8n is used off the shelf. A detector trained on crowded scenes would change the absolute scores, and possibly the size of the gaps.</li>
-      <li>Tracker settings are the defaults of the library version used, the same starting threshold for every tracker, with no tuning per tracker.</li>
+    <h2>Limits</h2>
+    <ul>
+      <li>Three sequences per scenario: the comparison is descriptive.</li>
+      <li>MOT17 and MOT20 are pedestrian benchmarks. The retail scenario is still to be run.</li>
+      <li>YOLOv8n is used off the shelf, without fine-tuning.</li>
     </ul>
-    <details><summary>Sequences used</summary><div class="table-wrap" id="seq-table"></div></details>
   </section>
 
   <footer>
     <span id="foot-generated"></span>
-    <span>Video frames and annotations: MOT17 (Milan et al., 2016) and MOT20 (Dendorfer et al., 2020), MOTChallenge, CC BY-NC-SA 3.0. Shown for academic, non-commercial use.</span>
-    <span>Tools: Ultralytics YOLOv8n, DeepSORT (Wojke et al.), ByteTrack and BoT-SORT (Ultralytics implementations), TrackEval.</span>
+    <span>Video frames and annotations: MOT17 (Milan et al., 2016) and MOT20 (Dendorfer et al., 2020), MOTChallenge, CC BY-NC-SA 3.0, shown for academic, non-commercial use.</span>
   </footer>
 </div>
 
@@ -275,14 +169,9 @@
   const NAME = { baseline: 'Detection only', deepsort: 'DeepSORT', bytetrack: 'ByteTrack', botsort: 'BoT-SORT' };
   const TRACKERS = ['deepsort', 'bytetrack', 'botsort'];
   const CONFIGS = ['baseline'].concat(TRACKERS);
-  const SCENARIO = { crowded: 'Crowded (MOT20)', moving: 'Moving camera (MOT17)' };
-  const RES = { '640': '640 px', '1280': '1280 px' };
-  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  const f3 = (v) => v.toFixed(3);
-  const signed = (v, digits) => (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(digits);
+  const f3 = (v) => v.toFixed(3), f1 = (v) => v.toFixed(1);
 
   function segmented(el, options, value, onChange) {
-    el.innerHTML = '';
     Object.entries(options).forEach(([key, label]) => {
       const b = document.createElement('button');
       b.type = 'button'; b.textContent = label; b.setAttribute('aria-pressed', String(key === value));
@@ -294,146 +183,37 @@
     });
   }
 
-  function bars(el, rows, max, fmt) {
-    el.innerHTML = rows.map((r) =>
-      '<div class="bar-row" title="' + NAME[r.key] + ': ' + fmt(r.value) + '">' +
-      '<span class="bar-label"><i class="dot bg-' + r.key + '"></i>' + NAME[r.key] + '</span>' +
-      '<span class="bar-track"><span class="bar bg-' + r.key + '" style="width:' + Math.max(0, Math.min(100, r.value / max * 100)).toFixed(2) + '%"></span></span>' +
-      '<span class="bar-value">' + fmt(r.value) + '</span></div>').join('');
+  function bars(el, keys, value, max, fmt) {
+    el.innerHTML = keys.map((k) =>
+      '<div class="bar-row" title="' + NAME[k] + ': ' + fmt(value(k)) + '">' +
+      '<span class="bar-label"><i class="dot bg-' + k + '"></i>' + NAME[k] + '</span>' +
+      '<span class="bar-track"><span class="bar bg-' + k + '" style="width:' + (value(k) / max * 100).toFixed(2) + '%"></span></span>' +
+      '<span class="bar-value">' + fmt(value(k)) + '</span></div>').join('');
   }
 
-  function table(el, header, rows) {
-    el.innerHTML = '<table><thead><tr>' + header.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +
-      rows.map((r) => '<tr>' + r.map((c) => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</tbody></table>';
+  function drawTracking(scenario) {
+    const data = D.tracking['640'][scenario];
+    bars($('t-bars'), TRACKERS, (k) => data[k].HOTA, 0.4, f3);
+    const order = TRACKERS.slice().sort((a, b) => data[b].HOTA - data[a].HOTA);
+    $('t-reading').textContent = NAME[order[0]] + ' is best, ' + NAME[order[2]] + ' is last. The gap is ' + f3(data[order[0]].HOTA - data[order[2]].HOTA) + '. Bars run from 0 to 0.4.';
   }
+  segmented($('t-scenario'), { crowded: 'Crowded (MOT20)', moving: 'Moving camera (MOT17)' }, 'crowded', drawTracking);
+  drawTracking('crowded');
 
-  const niceMax = (v) => { const step = Math.pow(10, Math.floor(Math.log10(v))); return Math.ceil(v / step) * step; };
-
-  /* ---- tracking explorer ---- */
-  const TM = {
-    HOTA: { label: 'HOTA', higher: true, what: 'detection and association in one score' },
-    DetA: { label: 'DetA', higher: true, what: 'how well people are detected' },
-    AssA: { label: 'AssA', higher: true, what: 'how well identities are kept' },
-    MOTA: { label: 'MOTA', higher: true, what: 'misses, false boxes and ID switches' },
-    IDF1: { label: 'IDF1', higher: true, what: 'how long identities stay correct' },
-    IDSW: { label: 'ID switches', higher: false, what: 'number of identity changes', count: true },
-  };
-  const t = { scenario: 'crowded', metric: 'HOTA' };
-  function drawTracking() {
-    const m = TM[t.metric], data = D.tracking['640'][t.scenario];
-    const rows = TRACKERS.map((k) => ({ key: k, value: data[k][t.metric] }));
-    const fmt = m.count ? (v) => Math.round(v).toLocaleString('en-US') : f3;
-    const all = m.count ? rows.map((r) => r.value)
-      : Object.values(D.tracking['640']).flatMap((s) => TRACKERS.map((k) => s[k][t.metric]));
-    const max = m.count ? niceMax(Math.max.apply(null, all)) : Math.ceil(Math.max.apply(null, all) * 10) / 10;
-    bars($('t-bars'), rows, max, fmt);
-    $('t-scale').textContent = 'Bars run from 0 to ' + fmt(max) + (m.count ? '' : ' (same scale in both scenarios)') + '. ' + m.label + ': ' + m.what + '; ' + (m.higher ? 'higher' : 'lower') + ' is better.';
-    const sorted = rows.slice().sort((a, b) => m.higher ? b.value - a.value : a.value - b.value);
-    const spread = Math.abs(sorted[0].value - sorted[2].value);
-    $('t-reading').textContent = NAME[sorted[0].key] + ' is best on ' + m.label + ' (' + fmt(sorted[0].value) + '), then ' + NAME[sorted[1].key] + ' (' + fmt(sorted[1].value) + ') and ' + NAME[sorted[2].key] + ' (' + fmt(sorted[2].value) + '). The gap between best and worst is ' + fmt(spread) + '.';
-    const keys = Object.keys(TM).concat(['Recall', 'Precision']);
-    table($('t-table'), ['Tracker'].concat(keys.map((k) => (TM[k] || { label: k }).label)),
-      TRACKERS.map((k) => [NAME[k]].concat(keys.map((x) => x === 'IDSW' ? Math.round(data[k][x]).toLocaleString('en-US') : f3(data[k][x])))));
-  }
-  segmented($('t-scenario'), SCENARIO, t.scenario, (v) => { t.scenario = v; drawTracking(); });
-  segmented($('t-metric'), Object.fromEntries(Object.entries(TM).map(([k, v]) => [k, v.label])), t.metric, (v) => { t.metric = v; drawTracking(); });
-  drawTracking();
-
-  /* ---- heatmap fidelity explorer ---- */
-  const HM = {
-    SSIM: { label: 'SSIM', higher: true, fmt: f3, what: 'structural similarity to the ground-truth heatmap' },
-    JS: { label: 'JS divergence', higher: false, fmt: f3, what: 'distance between the two density distributions' },
-    count_MAPE: { label: 'Count error (%)', higher: false, fmt: (v) => v.toFixed(1), what: 'mean error of the number of people per frame' },
-  };
-  const h = { res: '640', metric: 'SSIM' };
-  function drawHeat() {
-    const m = HM[h.metric], data = D.heat[h.res];
-    const rows = CONFIGS.map((k) => ({ key: k, value: data[k][h.metric] }));
-    const all = Object.values(D.heat).flatMap((r) => CONFIGS.map((k) => r[k][h.metric]));
-    const max = h.metric === 'SSIM' ? 1 : niceMax(Math.max.apply(null, all));
-    bars($('h-bars'), rows, max, m.fmt);
-    $('h-scale').textContent = 'Bars run from 0 to ' + m.fmt(max) + ' (same scale at both input sizes). ' + m.label + ': ' + m.what + '; ' + (m.higher ? 'higher' : 'lower') + ' is better. Frame-weighted mean of MOT20-02, -03 and -05.';
-    const best = TRACKERS.map((k) => ({ key: k, value: data[k][h.metric] })).sort((a, b) => m.higher ? b.value - a.value : a.value - b.value)[0];
-    const digits = h.metric === 'count_MAPE' ? 1 : 3;
-    const trackEffect = best.value - data.baseline[h.metric];
-    const resEffect = D.heat['1280'].baseline[h.metric] - D.heat['640'].baseline[h.metric];
-    $('h-reading').textContent = 'At ' + RES[h.res] + ', the best tracker (' + NAME[best.key] + ') changes ' + m.label + ' by ' + signed(trackEffect, digits) +
-      ' compared with detection only. Raising the input size from 640 to 1280 px changes it by ' + signed(resEffect, digits) + ' with no tracker at all.';
-    const header = ['Configuration'];
-    Object.keys(RES).forEach((r) => Object.keys(HM).forEach((k) => header.push(HM[k].label + ', ' + RES[r])));
-    table($('h-table'), header, CONFIGS.map((c) => [NAME[c]].concat(Object.keys(RES).flatMap((r) => Object.keys(HM).map((k) => HM[k].fmt(D.heat[r][c][k]))))));
-  }
-  segmented($('h-res'), RES, h.res, (v) => { h.res = v; drawHeat(); });
-  segmented($('h-metric'), Object.fromEntries(Object.entries(HM).map(([k, v]) => [k, v.label])), h.metric, (v) => { h.metric = v; drawHeat(); });
-  drawHeat();
-
-  /* ---- heatmap video ---- */
-  function setHeatVideo(res) {
+  function drawHeat(res) {
     const v = $('v-heatmap'), base = 'video/heatmap_MOT20-02_' + res;
     v.poster = base + '.jpg'; v.src = base + '.mp4';
+    const data = D.heat[res];
+    bars($('h-bars'), CONFIGS, (k) => data[k].SSIM, 1, f3);
+    const best = Math.max.apply(null, TRACKERS.map((k) => data[k].SSIM));
+    $('h-reading').textContent = 'At ' + res + ' px, tracking adds ' + f3(best - data.baseline.SSIM) + ' over detection only. Going from 640 to 1280 px adds ' +
+      f3(D.heat['1280'].baseline.SSIM - D.heat['640'].baseline.SSIM) + '. Bars run from 0 to 1.';
   }
-  segmented($('v-res'), RES, '640', setHeatVideo);
-  setHeatVideo('640');
+  segmented($('h-res'), { '640': 'Detector at 640 px', '1280': 'Detector at 1280 px' }, '640', drawHeat);
+  drawHeat('640');
 
-  /* ---- heatmap comparer ---- */
-  const seqs = Object.keys(D.heatPerSeq['640']);
-  const c = { seq: seqs[0], res: '640', config: 'botsort' };
-  function drawCompare() {
-    const stem = 'heatmaps/' + c.seq + '_' + c.res + '_';
-    $('c-gt').src = stem + 'gt.jpg';
-    $('c-img').src = stem + c.config + '.jpg';
-    $('c-img').alt = NAME[c.config] + ' heatmap for ' + c.seq + ' at ' + RES[c.res];
-    $('c-cap').innerHTML = '<i class="dot bg-' + c.config + '"></i>' + NAME[c.config] + ', ' + RES[c.res];
-    const s = D.heatPerSeq[c.res][c.seq][c.config];
-    $('c-stats').innerHTML =
-      '<div class="stat"><b>' + f3(s.SSIM) + '</b><span>SSIM (1 is identical)</span></div>' +
-      '<div class="stat"><b>' + f3(s.JS) + '</b><span>JS divergence (0 is identical)</span></div>' +
-      '<div class="stat"><b>' + s.count_MAPE.toFixed(1) + '%</b><span>count error per frame</span></div>';
-  }
-  segmented($('c-seq'), Object.fromEntries(seqs.map((s) => [s, s])), c.seq, (v) => { c.seq = v; drawCompare(); });
-  segmented($('c-res'), RES, c.res, (v) => { c.res = v; drawCompare(); });
-  segmented($('c-config'), NAME, c.config, (v) => { c.config = v; drawCompare(); });
-  drawCompare();
-
-  /* ---- speed against accuracy ---- */
-  const s = { scenario: 'crowded' };
-  const VIDEO_FPS = { crowded: 25, moving: 30 };
-  function drawScatter() {
-    const W = 720, H = 360, L = 64, R = 24, T = 20, B = 52, XMAX = 80, YMAX = 0.5;
-    const x = (v) => L + v / XMAX * (W - L - R), y = (v) => H - B - v / YMAX * (H - T - B);
-    const ink2 = css('--ink-2'), rule = css('--rule'), axis = css('--axis'), surface = css('--surface');
-    let g = '';
-    for (let v = 0; v <= YMAX + 1e-9; v += 0.1) {
-      g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="' + rule + '" stroke-width="1"/>' +
-           '<text x="' + (L - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + v.toFixed(1) + '</text>';
-    }
-    for (let v = 0; v <= XMAX; v += 20) g += '<text x="' + x(v) + '" y="' + (H - B + 18) + '" text-anchor="middle">' + v + '</text>';
-    g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke="' + axis + '" stroke-width="1"/>';
-    g += '<text x="' + ((L + W - R) / 2) + '" y="' + (H - 10) + '" text-anchor="middle">end-to-end speed (frames per second)</text>';
-    g += '<text x="14" y="' + ((T + H - B) / 2) + '" text-anchor="middle" transform="rotate(-90 14 ' + ((T + H - B) / 2) + ')">HOTA</text>';
-    const vf = VIDEO_FPS[s.scenario];
-    g += '<line x1="' + x(vf) + '" x2="' + x(vf) + '" y1="' + T + '" y2="' + y(0) + '" stroke="' + ink2 + '" stroke-width="1" stroke-dasharray="4 4"/>' +
-         '<text x="' + (x(vf) + 6) + '" y="' + (T + 10) + '">video frame rate, ' + vf + ' fps</text>';
-    TRACKERS.forEach((k) => {
-      const fps = D.runtime[s.scenario][k], hota = D.tracking['640'][s.scenario][k].HOTA;
-      g += '<circle cx="' + x(fps) + '" cy="' + y(hota) + '" r="8" fill="' + css('--c-' + k) + '" stroke="' + surface + '" stroke-width="2"><title>' +
-           NAME[k] + ': HOTA ' + f3(hota) + ', ' + fps.toFixed(1) + ' fps</title></circle>' +
-           '<text class="name" x="' + x(fps) + '" y="' + (y(hota) - 14) + '" text-anchor="middle">' + NAME[k] + '</text>' +
-           '<text x="' + x(fps) + '" y="' + (y(hota) + 24) + '" text-anchor="middle">' + f3(hota) + ' · ' + fps.toFixed(1) + ' fps</text>';
-    });
-    $('s-chart').innerHTML = g;
-    const r = D.runtime[s.scenario], tr = D.tracking['640'][s.scenario];
-    const faster = TRACKERS.filter((k) => r[k] >= vf).map((k) => NAME[k]);
-    $('s-reading').textContent = 'ByteTrack runs at ' + r.bytetrack.toFixed(1) + ' fps and BoT-SORT at ' + r.botsort.toFixed(1) + ' fps for a HOTA difference of ' +
-      f3(Math.abs(tr.botsort.HOTA - tr.bytetrack.HOTA)) + '. DeepSORT runs at ' + r.deepsort.toFixed(1) + ' fps because its appearance model runs on the CPU. ' +
-      (faster.length ? 'Faster than the video frame rate on this PC: ' + faster.join(' and ') + '.' : 'No tracker reaches the video frame rate on this PC.');
-  }
-  segmented($('s-scenario'), SCENARIO, s.scenario, (v) => { s.scenario = v; drawScatter(); });
-  drawScatter();
-
-  /* ---- static tables and footer ---- */
-  table($('seq-table'), ['Scenario', 'Sequence', 'Frames', 'Resolution', 'FPS', 'Identities', 'People per frame (mean / max)', 'Occluded boxes (%)'], D.sequences);
-  $('foot-generated').textContent = 'Data generated on ' + D.generated + ' from the saved run "' + D.preset + '". Results are a draft for the results seminar.';
+  bars($('s-bars'), CONFIGS, (k) => D.runtime.crowded[k], 80, f1);
+  $('foot-generated').textContent = 'Data generated on ' + D.generated + '. Results are a draft for the results seminar.';
 })();
 </script>
 

@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Results Seminar Slides</title>
+<style>
+  /* Look of the UGM slide template used for the proposal seminar: white slides, navy titles, yellow rule, navy footer bar.
+     Every slide is drawn on a fixed 1280 x 720 stage that is scaled to the window; printing gives one slide per page. */
+  :root {
+    --navy: #00446a; --navy-bar: #06486e; --yellow: #ffd200; --gold: #c9a300;
+    --ink: #1c2530; --ink-2: #55606b; --rule: #dfe6ec; --axis: #b9c4cd; --tint: #eaf3f9; --tint-y: #fffbe9; --room: #1b1d21;
+    --c-baseline: #898781; --c-deepsort: #2a78d6; --c-bytetrack: #eb6834; --c-botsort: #1baf7a;
+  }
+  html, body { height: 100%; margin: 0; background: var(--room); overflow: hidden; font-family: Arial, Helvetica, sans-serif; color: var(--ink); }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1280px; height: 720px; transform: translate(-50%, -50%); }
+  .slide { position: absolute; inset: 0; box-sizing: border-box; background: #ffffff; padding: 24px 44px 58px;
+           display: none; flex-direction: column; gap: 14px; font-size: 21px; line-height: 1.4; overflow: hidden; }
+  .slide.active { display: flex; }
+  .kicker { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  h1 { font-size: 38px; line-height: 1.18; margin: 0; font-weight: 700; color: var(--navy); }
+  h2 { font-size: 36px; line-height: 1.15; margin: 0; font-weight: 700; color: var(--navy); max-width: 960px; text-wrap: balance; }
+  h3 { font-size: 21px; margin: 0; font-weight: 700; color: var(--navy); }
+  p { margin: 0; }
+  .muted { color: var(--ink-2); }
+  .small { font-size: 18px; }
+  .logo { position: absolute; top: 20px; right: 44px; width: 184px; height: auto; }
+  .yrule { width: 916px; height: 4px; background: var(--yellow); border-radius: 2px; flex: none; }
+  .body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+  .cols { display: grid; gap: 24px; align-items: start; }
+  .c2 { grid-template-columns: 1fr 1fr; } .c3 { grid-template-columns: repeat(3, 1fr); } .c-wide { grid-template-columns: 1.5fr 1fr; align-items: center; }
+  .card { background: #ffffff; border: 1px solid var(--rule); border-left: 8px solid var(--navy); border-radius: 10px; padding: 14px 18px;
+          display: flex; flex-direction: column; gap: 6px; box-shadow: 0 2px 5px rgba(0, 40, 70, 0.10); }
+  .card.y { border-left-color: var(--gold); background: var(--tint-y); }
+  ul, ol { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 8px; }
+  .takeaway { background: var(--navy); color: #ffffff; font-weight: 700; border-radius: 10px; padding: 12px 20px; font-size: 20px; align-self: center; text-align: center; }
+  .takeaway em { color: var(--yellow); font-style: normal; }
+  .foot { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background: var(--navy-bar); color: #ffffff; display: flex; align-items: center;
+          justify-content: space-between; font-size: 11px; letter-spacing: 0.04em; padding-left: 40px; }
+  .foot b { align-self: stretch; width: 62px; background: var(--yellow); color: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .dot { display: inline-block; width: 13px; height: 13px; border-radius: 3px; flex: none; }
+  .bg-baseline { background: var(--c-baseline); } .bg-deepsort { background: var(--c-deepsort); }
+  .bg-bytetrack { background: var(--c-bytetrack); } .bg-botsort { background: var(--c-botsort); }
+
+  .title-slide { padding: 0; }
+  .title-slide .art { position: absolute; left: 0; top: 0; height: 720px; width: auto; }
+  .title-slide .strip { position: absolute; right: 0; top: 0; bottom: 0; width: 60px; background: linear-gradient(var(--yellow) 200px, var(--navy) 200px); }
+  .title-slide .text { position: absolute; left: 660px; right: 84px; top: 96px; display: flex; flex-direction: column; gap: 22px; }
+  .title-slide .bar { width: 86px; height: 5px; background: var(--yellow); }
+  .title-slide .who { display: flex; flex-direction: column; gap: 14px; font-size: 17px; }
+  .title-slide .who strong { color: var(--navy); font-size: 19px; }
+  .title-slide .site { position: absolute; right: 168px; top: 632px; font-size: 16px; color: var(--navy); }
+
+  .agenda { display: grid; grid-template-columns: 44px 1fr; gap: 14px 16px; align-items: center; max-width: 900px; }
+  .agenda b { width: 44px; height: 44px; border-radius: 50%; background: var(--navy); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .agenda b.y { background: var(--yellow); color: var(--navy); }
+  .agenda span { background: var(--tint); border-radius: 8px; padding: 10px 16px; color: var(--navy); box-shadow: 0 2px 4px rgba(0, 40, 70, 0.12); }
+  .agenda span.y { background: #fff6dc; }
+
+  .pipeline { display: flex; align-items: stretch; gap: 10px; }
+  .step { flex: 1; background: var(--tint); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; font-size: 16px; color: var(--ink-2); }
+  .step strong { font-size: 20px; color: var(--navy); }
+  .step.swap { background: #fff6dc; box-shadow: inset 0 4px 0 var(--yellow); }
+  .arrow { align-self: center; color: var(--axis); font-size: 24px; }
+  .chip { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 17px; }
+
+  .bars { display: flex; flex-direction: column; gap: 12px; }
+  .bar-row { display: grid; grid-template-columns: 180px 1fr 90px; align-items: center; gap: 16px; }
+  .bar-label { display: flex; align-items: center; gap: 10px; font-size: 21px; }
+  .bar-track { height: 28px; border-left: 1px solid var(--axis); background: linear-gradient(to right, var(--rule) 1px, transparent 1px) 0 0 / 25% 100%; }
+  .bar { display: block; height: 100%; border-radius: 0 5px 5px 0; }
+  .bar-value { font-variant-numeric: tabular-nums; font-size: 23px; font-weight: 700; text-align: right; }
+  .scale-note { font-size: 13px; color: var(--ink-2); }
+
+  table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 18px; width: 100%; }
+  th, td { padding: 7px 14px 7px 0; text-align: right; border-bottom: 1px solid var(--rule); }
+  th:first-child, td:first-child, td.l, th.l { text-align: left; }
+  th { font-weight: 700; color: var(--navy); font-size: 15px; }
+  .name { display: inline-flex; align-items: center; gap: 8px; }
+
+  .bigs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .big { display: flex; flex-direction: column; gap: 4px; background: var(--tint); border-radius: 10px; padding: 14px 18px; }
+  .big b { font-size: 44px; font-variant-numeric: tabular-nums; line-height: 1.1; color: var(--navy); }
+  .big span { font-size: 17px; color: var(--ink-2); }
+
+  video { width: 100%; aspect-ratio: 16 / 9; background: #0b0b0b; border-radius: 6px; display: block; }
+  .media { display: grid; grid-template-columns: 850px 1fr; gap: 26px; align-items: center; }
+  .media ul { font-size: 19px; }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+  figure img { width: 100%; height: auto; border-radius: 4px; display: block; background: var(--rule); }
+  figcaption { font-size: 16px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+  .fig { max-height: 400px; width: auto; max-width: 100%; justify-self: center; border: 1px solid var(--rule); border-radius: 6px; }
+  .status { font-size: 14px; padding: 2px 8px; border-radius: 4px; background: var(--tint); color: var(--navy); white-space: nowrap; font-weight: 700; }
+  .status.wait { background: #fff0c2; color: #6b4a00; }
+  .qr { display: flex; align-items: center; gap: 22px; }
+  .qr svg { width: 150px; height: 150px; border: 1px solid var(--rule); border-radius: 6px; }
+  .link { font-size: 18px; color: var(--navy); font-weight: 700; }
+
+  #nav { position: fixed; left: 50%; bottom: 6px; transform: translateX(-50%); display: flex; gap: 6px; z-index: 5; opacity: 0.6; }
+  @media (hover: hover) { #nav { opacity: 0; } #nav:hover, #nav:focus-within { opacity: 1; } }
+  #nav button { font: 700 16px Arial, sans-serif; width: 40px; height: 34px; border-radius: 4px; border: 1px solid #5b5e66; background: #2a2d33; color: #ffffff; cursor: pointer; }
+  #nav button:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+  @page { size: 1280px 720px; margin: 0; }
+  @media print {
+    html, body { height: auto; overflow: visible; background: #ffffff; }
+    #stage { position: static; transform: none !important; width: 1280px; height: auto; }
+    .slide { display: flex !important; position: relative; inset: auto; width: 1280px; height: 720px; break-after: page; }
+    #nav { display: none; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <section class="slide title-slide" data-part="">
+    <img class="art" src="assets/title-art.png" alt="Universitas Gadjah Mada">
+    <div class="strip"></div>
+    <div class="text">
+      <h1>A Comparative Analysis of YOLO and DeepSORT-based Tracking Combinations for Customer Movement Heatmap in Retail Environments</h1>
+      <div class="bar"></div>
+      <div class="who">
+        <span><b>Advisor</b>: Prof. Drs. Agus Harjoko, M.Sc., Ph.D.</span>
+        <strong>R. Raghda Hassa Parardhya Cornika</strong>
+        <span>Undergraduate Thesis, Results Seminar<br>Electronics and Instrumentation Study Program<br>Universitas Gadjah Mada, 2026</span>
+      </div>
+    </div>
+    <span class="site">ugm.ac.id</span>
+  </section>
+
+  <section class="slide" data-part="Overview">
+    <h2>Presentation Overview</h2>
+    <div class="body">
+      <div class="agenda">
+        <b>1</b><span>Introduction: problem and objectives</span>
+        <b class="y">2</b><span class="y">Literature review: what is missing</span>
+        <b>3</b><span>Methodology: one detector, three trackers</span>
+        <b class="y">4</b><span class="y">Results and discussion</span>
+        <b>5</b><span>Conclusions and next steps</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Introduction">
+    <span class="kicker">Chapter I · Introduction</span>
+    <h2>Why Customer Movement Heatmaps?</h2>
+    <div class="body">
+      <div class="cols c3">
+        <div class="card"><h3>Physical stores still dominate</h3><p class="small">57.98% of Indonesian businesses sell only offline (BPS, 2024).</p></div>
+        <div class="card y"><h3>Movement is the insight</h3><p class="small">Heatmaps show which areas attract customers.</p></div>
+        <div class="card"><h3>CCTV is already there</h3><p class="small">Detection and tracking turn it into data, with no new sensors.</p></div>
+      </div>
+      <p class="takeaway">Which tracker should a retailer use, and <em>how much does it matter</em> for the heatmap?</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Introduction">
+    <span class="kicker">Chapter I · Problem statement and objectives</span>
+    <h2>Three Gaps, Three Objectives</h2>
+    <div class="body">
+      <table>
+        <thead><tr><th class="l" style="width:48%">Gap in previous work</th><th class="l">Objective</th></tr></thead>
+        <tbody>
+          <tr><td>Only DeepSORT is used; no comparison with newer trackers</td><td class="l">Compare DeepSORT, ByteTrack and BoT-SORT with YOLOv8n</td></tr>
+          <tr><td>Tracking judged with detection metrics only</td><td class="l">Use MOTA, IDF1 and HOTA</td></tr>
+          <tr><td>Heatmaps judged by eye</td><td class="l">Score heatmaps against ground truth and relate them to tracking accuracy</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Literature review">
+    <span class="kicker">Chapter II · Literature review</span>
+    <h2>What Was Missing?</h2>
+    <div class="body">
+      <div class="cols c2">
+        <div class="card"><h3>Previous studies</h3>
+          <ul class="small">
+            <li>Shili et al. (2024): YOLOv5 + DeepSORT retail heatmaps</li>
+            <li>Şimşek and Tekbaş (2024): customised YOLO–DeepSORT</li>
+            <li>Zhang et al., Aharon et al. (2022): ByteTrack, BoT-SORT on MOT benchmarks</li>
+          </ul></div>
+        <div class="card y"><h3>This thesis</h3>
+          <ul class="small">
+            <li>Modern trackers on the heatmap task</li>
+            <li>Standard tracking metrics (TrackEval)</li>
+            <li>Heatmaps scored against ground truth</li>
+          </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Methodology">
+    <span class="kicker">Chapter III · Research design</span>
+    <h2>Only the Tracker Changes</h2>
+    <div class="body">
+      <div class="pipeline">
+        <div class="step"><strong>Video</strong>MOT20, MOT17</div><span class="arrow">→</span>
+        <div class="step"><strong>YOLOv8n</strong>Shared detections</div><span class="arrow">→</span>
+        <div class="step swap"><strong>Tracker</strong>
+          <span class="chip"><i class="dot bg-deepsort"></i>DeepSORT</span><span class="chip"><i class="dot bg-bytetrack"></i>ByteTrack</span><span class="chip"><i class="dot bg-botsort"></i>BoT-SORT</span></div><span class="arrow">→</span>
+        <div class="step"><strong>Heatmap</strong>Foot points + KDE</div><span class="arrow">→</span>
+        <div class="step"><strong>Evaluation</strong>Against ground truth</div>
+      </div>
+      <p class="small"><span class="name"><i class="dot bg-baseline"></i><b>Detection-only baseline</b></span>: the same detections without a tracker. It shows what tracking adds.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Methodology">
+    <span class="kicker">Chapter III · The three trackers</span>
+    <h2>Three Trackers, Three Ideas</h2>
+    <div class="body">
+      <div class="cols c3">
+        <div class="card" style="border-left-color:var(--c-deepsort)"><h3>DeepSORT (2017)</h3><p class="small">Motion + appearance descriptor for every box.</p></div>
+        <div class="card" style="border-left-color:var(--c-bytetrack)"><h3>ByteTrack (2022)</h3><p class="small">Motion only. Also matches low-score boxes.</p></div>
+        <div class="card" style="border-left-color:var(--c-botsort)"><h3>BoT-SORT (2022)</h3><p class="small">ByteTrack + camera-motion compensation.</p></div>
+      </div>
+      <p class="small muted">No tuning per tracker. All start tracks from the same detector threshold (0.25).</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Methodology">
+    <span class="kicker">Chapter III · Data and scenarios</span>
+    <h2>Scenarios and Data</h2>
+    <div class="body">
+      <table>
+        <thead><tr><th class="l">Scenario</th><th class="l">Data</th><th>Sequences</th><th>Frames</th><th>People per frame</th><th class="l">Status</th></tr></thead>
+        <tbody>
+          <tr><td>Crowded, static camera</td><td class="l">MOT20-02, -03, -05</td><td>3</td><td>8,502</td><td>56 to 195</td><td class="l"><span class="status">done</span></td></tr>
+          <tr><td>Moving camera</td><td class="l">MOT17-10, -11, -13</td><td>3</td><td>2,304</td><td>10 to 20</td><td class="l"><span class="status">done</span></td></tr>
+          <tr><td>Standard retail scene</td><td class="l">MMPTRACK Retail</td><td>10+</td><td>-</td><td>10 to 30</td><td class="l"><span class="status wait">data requested</span></td></tr>
+        </tbody>
+      </table>
+      <p class="small muted">Heatmaps are evaluated on the static-camera scenario only.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Methodology">
+    <span class="kicker">Chapter III · Evaluation</span>
+    <h2>Two Layers of Evaluation</h2>
+    <div class="body">
+      <div class="cols c2">
+        <div class="card"><h3>1. Are the tracks correct?</h3>
+          <ul class="small"><li><b>HOTA</b> (primary), MOTA, IDF1</li><li>Official TrackEval toolkit</li></ul></div>
+        <div class="card y"><h3>2. Does the heatmap match?</h3>
+          <ul class="small"><li><b>SSIM</b>, KL and JS divergence</li><li>Count error per frame</li></ul></div>
+      </div>
+      <p class="small muted">Statistics: Friedman, Wilcoxon with Holm correction, Spearman correlation.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Methodology">
+    <span class="kicker">Chapter IV · Implementation</span>
+    <h2>Changes From the Proposal</h2>
+    <div class="body">
+      <table>
+        <thead><tr><th class="l" style="width:30%">Proposal</th><th class="l" style="width:34%">Implemented</th><th class="l">Why</th></tr></thead>
+        <tbody class="small">
+          <tr><td>DeepSORT through Ultralytics</td><td class="l">Authors' repository, mars-small128</td><td class="l">Ultralytics has no DeepSORT</td></tr>
+          <tr><td>Thresholds 0.5 / 0.1 / 0.6</td><td class="l">0.25 / 0.1 / 0.25 (main)</td><td class="l">Same start as the detector</td></tr>
+          <tr><td>Count error from identities</td><td class="l">People per frame</td><td class="l">The baseline has no identities</td></tr>
+          <tr><td>RTX 3050</td><td class="l">GTX 1650 SUPER</td><td class="l">The PC actually used</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Demo, MOT17-11</span>
+    <h2>Same Frames, Three Trackers</h2>
+    <div class="body">
+      <div class="media">
+        <video controls muted loop playsinline preload="metadata" poster="../video/tracking_MOT17-11.jpg" src="../video/tracking_MOT17-11.mp4"></video>
+        <ul>
+          <li><b>Colour</b> = identity</li>
+          <li>Colour change = <b>ID switch</b></li>
+          <li>Far people are missed by all</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Tracking, crowded (MOT20)</span>
+    <h2>Crowded: BoT-SORT Leads by a Small Margin</h2>
+    <div class="body">
+      <div class="bars" id="b-crowded"></div>
+      <span class="scale-note">Combined HOTA, three sequences. Bars run from 0 to 0.4.</span>
+      <div id="tb-crowded"></div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Tracking, moving camera (MOT17)</span>
+    <h2>Moving Camera: ByteTrack Falls Behind</h2>
+    <div class="body">
+      <div class="bars" id="b-moving"></div>
+      <span class="scale-note">Combined HOTA, three sequences. Bars run from 0 to 0.4.</span>
+      <div id="tb-moving"></div>
+      <p class="small muted">ByteTrack has no camera-motion compensation. DeepSORT has the best IDF1.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Error breakdown</span>
+    <h2>Missed People Dominate the Errors</h2>
+    <div class="body">
+      <div class="bigs">
+        <div class="big"><b>19–22%</b><span>of people found in crowds</span></div>
+        <div class="big"><b>42–45%</b><span>found with a moving camera</span></div>
+        <div class="big"><b>0.87–0.96</b><span>precision of the reported boxes</span></div>
+      </div>
+      <div id="tb-errors"></div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Demo, MOT20-02</span>
+    <h2>From Tracks to Heatmaps</h2>
+    <div class="body">
+      <div class="media">
+        <video controls muted loop playsinline preload="metadata" poster="../video/heatmap_MOT20-02_640.jpg" src="../video/heatmap_MOT20-02_640.mp4"></video>
+        <ul>
+          <li>Time-lapse of 2,782 frames</li>
+          <li>All three look alike</li>
+          <li>All miss the far crowd</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Heatmap quality, crowded</span>
+    <h2>Tracking Improves the Heatmap Only Slightly</h2>
+    <div class="body">
+      <div class="bars" id="b-heat"></div>
+      <span class="scale-note">Frame-weighted SSIM against the ground truth. Bars run from 0 to 1.</span>
+      <div id="tb-heat"></div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter VI · Discussion</span>
+    <h2>Why So Little? A Heatmap Ignores Identities</h2>
+    <div class="body">
+      <div class="cols c-wide">
+        <ul>
+          <li>Only the <b>set of boxes</b> matters</li>
+          <li>BoT-SORT adds 4–26% more boxes</li>
+          <li>DeepSORT changes under 5%</li>
+          <li>HOTA and SSIM: ρ = 0.83, driven by scene difficulty</li>
+        </ul>
+        <figure><img src="../figures/f_hota_ssim.png" alt="HOTA against SSIM for every sequence and tracker"><figcaption>HOTA against SSIM per sequence</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Statistical comparison</span>
+    <h2>Three Sequences: Descriptive Only</h2>
+    <div class="body">
+      <div class="bigs">
+        <div class="big"><b>0.0498</b><span>smallest possible Friedman p-value</span></div>
+        <div class="big"><b>0.25</b><span>smallest possible Wilcoxon p-value</span></div>
+        <div class="big"><b>0.75–1.00</b><span>Holm-adjusted pairwise p-values</span></div>
+      </div>
+      <p class="takeaway">The order is consistent, but <em>no pairwise difference can be confirmed</em> yet.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Sensitivity to thresholds</span>
+    <h2>The Ranking Depends on the Thresholds</h2>
+    <div class="body">
+      <div class="cols c-wide">
+        <img class="fig" src="../figures/f_presets.png" alt="Combined HOTA of the three trackers under three threshold settings">
+        <ul>
+          <li>Proposal values: DeepSORT ranks first</li>
+          <li>81% of boxes score below 0.6</li>
+          <li>They never start a ByteTrack or BoT-SORT track</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Sensitivity to detector input size</span>
+    <h2>The Detector Matters Most</h2>
+    <div class="body">
+      <div class="cols c3">
+        <figure><img src="../heatmaps/MOT20-05_640_gt.jpg" alt="Ground-truth heatmap of MOT20-05"><figcaption><i class="dot bg-baseline"></i>Ground truth</figcaption></figure>
+        <figure><img src="../heatmaps/MOT20-05_640_botsort.jpg" alt="BoT-SORT heatmap at 640 pixels"><figcaption><i class="dot bg-botsort"></i>BoT-SORT, 640 px</figcaption></figure>
+        <figure><img src="../heatmaps/MOT20-05_1280_botsort.jpg" alt="BoT-SORT heatmap at 1280 pixels"><figcaption><i class="dot bg-botsort"></i>BoT-SORT, 1280 px</figcaption></figure>
+      </div>
+      <div id="tb-imgsz"></div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter V · Processing speed</span>
+    <h2>ByteTrack Is the Cheapest</h2>
+    <div class="body">
+      <div class="bars" id="b-fps"></div>
+      <span class="scale-note">End-to-end frames per second, crowded scenes. Bars run from 0 to 80. GTX 1650 SUPER; trackers on the CPU.</span>
+      <p class="small muted">DeepSORT's appearance network runs on the CPU. BoT-SORT pays for camera-motion estimation.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Results and discussion">
+    <span class="kicker">Chapter VI · Practical implications</span>
+    <h2>What This Means for a Retail System</h2>
+    <div class="body">
+      <div class="cols c3">
+        <div class="card"><h3>Improve detection first</h3><p class="small">Resolution or a better detector helps most.</p></div>
+        <div class="card y"><h3>Set thresholds per detector</h3><p class="small">Published values do not transfer.</p></div>
+        <div class="card"><h3>Pick the tracker by need</h3><p class="small">ByteTrack for speed, BoT-SORT for moving cameras.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Conclusions">
+    <span class="kicker">Chapter VI · Limitations</span>
+    <h2>Study Limitations</h2>
+    <div class="body">
+      <div class="cols c2">
+        <div class="card"><h3>Three sequences per scenario</h3><p class="small">No statistical confirmation yet.</p></div>
+        <div class="card y"><h3>Retail scenario not yet run</h3><p class="small">MOT data show public spaces, not a shop.</p></div>
+        <div class="card y"><h3>One detector</h3><p class="small">Off-the-shelf YOLOv8n, by design.</p></div>
+        <div class="card"><h3>Image coordinates</h3><p class="small">Perspective distorts far areas.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Conclusions">
+    <span class="kicker">Chapter VI · Conclusions</span>
+    <h2>Conclusions (Preliminary)</h2>
+    <div class="body">
+      <ol>
+        <li><b>BoT-SORT has the highest HOTA</b> in both scenarios (0.200 and 0.391), by a small margin.</li>
+        <li><b>Missed detections dominate.</b> Only 19–22% of people are found in crowds.</li>
+        <li><b>Tracking helps the heatmap only slightly</b> (SSIM 0.702 against 0.683). The detector input size helps about ten times more.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Conclusions">
+    <span class="kicker">Chapter VI · Suggestions</span>
+    <h2>Next Steps</h2>
+    <div class="body">
+      <div class="cols c2">
+        <div class="card"><h3>Before the final defence</h3>
+          <ul class="small"><li>Run the MMPTRACK retail scenario (10+ clips)</li><li>Repeat the statistical tests</li></ul></div>
+        <div class="card y"><h3>Future work</h3>
+          <ul class="small"><li>Better detector or higher resolution</li><li>Floor-plane heatmaps (homography)</li><li>Dwell time and unique visitors</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide title-slide" data-part="">
+    <img class="art" src="assets/title-art.png" alt="Universitas Gadjah Mada">
+    <div class="strip"></div>
+    <div class="text">
+      <h1>Thank You</h1>
+      <div class="bar"></div>
+      <div class="who"><strong>Questions and Discussion</strong></div>
+      <div class="qr">
+        <div id="qr"></div>
+        <div class="who">
+          <span>Interactive results and videos:</span>
+          <a class="link" href="https://raghdac.github.io/tracker-heatmap-benchmark/">raghdac.github.io/<wbr>tracker-heatmap-benchmark</a>
+        </div>
+      </div>
+    </div>
+    <span class="site">ugm.ac.id</span>
+  </section>
+
+  <section class="slide" data-part="Backup">
+    <span class="kicker">Backup</span>
+    <h2>Sequences Evaluated</h2>
+    <div class="body"><div id="tb-seq"></div></div>
+  </section>
+
+  <section class="slide" data-part="Backup">
+    <span class="kicker">Backup</span>
+    <h2>All Heatmap Metrics</h2>
+    <div class="body"><div id="tb-heat-all"></div>
+      <p class="small muted">Frame-weighted means. SSIM: higher is better. KL, JS and count error: lower is better.</p></div>
+  </section>
+
+  <section class="slide" data-part="Backup">
+    <span class="kicker">Backup · Demo at 1280 px</span>
+    <h2>Heatmaps With a 1280 px Detector Input</h2>
+    <div class="body">
+      <div class="media">
+        <video controls muted loop playsinline preload="metadata" poster="../video/heatmap_MOT20-02_1280.jpg" src="../video/heatmap_MOT20-02_1280.mp4"></video>
+        <ul><li>The far crowd appears in every panel</li></ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div id="nav"><button type="button" id="prev" aria-label="Previous slide">←</button><button type="button" id="next" aria-label="Next slide">→</button></div>
+
+<script src="../data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  const D = window.SITE_DATA;
+  const $ = (id) => document.getElementById(id);
+  const NAME = { baseline: 'Detection only', deepsort: 'DeepSORT', bytetrack: 'ByteTrack', botsort: 'BoT-SORT' };
+  const TRACKERS = ['deepsort', 'bytetrack', 'botsort'], CONFIGS = ['baseline'].concat(TRACKERS);
+  const f3 = (v) => v.toFixed(3), f1 = (v) => v.toFixed(1), int = (v) => Math.round(v).toLocaleString('en-US');
+  const label = (k) => '<span class="name"><i class="dot bg-' + k + '"></i>' + NAME[k] + '</span>';
+
+  function bars(id, keys, value, max, fmt) {
+    $(id).innerHTML = keys.map((k) => '<div class="bar-row"><span class="bar-label"><i class="dot bg-' + k + '"></i>' + NAME[k] + '</span>' +
+      '<span class="bar-track"><span class="bar bg-' + k + '" style="width:' + (value(k) / max * 100).toFixed(2) + '%"></span></span>' +
+      '<span class="bar-value">' + fmt(value(k)) + '</span></div>').join('');
+  }
+  function table(id, header, rows) {
+    $(id).innerHTML = '<table><thead><tr>' + header.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +
+      rows.map((r) => '<tr>' + r.map((c) => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</tbody></table>';
+  }
+
+  ['crowded', 'moving'].forEach((s) => {
+    const t = D.tracking['640'][s];
+    bars('b-' + s, TRACKERS, (k) => t[k].HOTA, 0.4, f3);
+    table('tb-' + s, ['Tracker', 'DetA', 'AssA', 'MOTA', 'IDF1', 'ID switches'],
+      TRACKERS.map((k) => [label(k), f3(t[k].DetA), f3(t[k].AssA), f3(t[k].MOTA), f3(t[k].IDF1), int(t[k].IDSW)]));
+  });
+  const tc = D.tracking['640'].crowded;
+  table('tb-errors', ['Crowded', 'Recall', 'Precision', 'Missed boxes', 'False boxes', 'ID switches'],
+    TRACKERS.map((k) => [label(k), f3(tc[k].Recall), f3(tc[k].Precision), int(tc[k].FN), int(tc[k].FP), int(tc[k].IDSW)]));
+
+  const h = D.heat['640'];
+  bars('b-heat', CONFIGS, (k) => h[k].SSIM, 1, f3);
+  table('tb-heat', ['Configuration', 'SSIM', 'JS divergence', 'Count error (%)'], CONFIGS.map((k) => [label(k), f3(h[k].SSIM), f3(h[k].JS), f1(h[k].count_MAPE)]));
+  table('tb-heat-all', ['Configuration', 'SSIM 640', 'KL 640', 'JS 640', 'Count 640 (%)', 'SSIM 1280', 'KL 1280', 'JS 1280', 'Count 1280 (%)'],
+    CONFIGS.map((k) => [label(k)].concat(['640', '1280'].flatMap((r) => [f3(D.heat[r][k].SSIM), f3(D.heat[r][k].KL), f3(D.heat[r][k].JS), f1(D.heat[r][k].count_MAPE)]))));
+
+  const t12 = D.tracking['1280'].crowded;
+  table('tb-imgsz', ['Input size', 'Recall', 'HOTA', 'SSIM', 'Count error (%)'], [
+    ['640 px', f3(tc.botsort.Recall), f3(tc.botsort.HOTA), f3(D.heat['640'].botsort.SSIM), f1(D.heat['640'].botsort.count_MAPE)],
+    ['1280 px', f3(t12.botsort.Recall), f3(t12.botsort.HOTA), f3(D.heat['1280'].botsort.SSIM), f1(D.heat['1280'].botsort.count_MAPE)],
+  ]);
+
+  bars('b-fps', CONFIGS, (k) => D.runtime.crowded[k], 80, f1);
+  table('tb-seq', ['Scenario', 'Sequence', 'Frames', 'Resolution', 'FPS', 'Identities', 'People per frame (mean / max)', 'Occluded (%)'], D.sequences);
+
+  if (window.qrcode) {
+    const qr = window.qrcode(0, 'M');
+    qr.addData('https://raghdac.github.io/tracker-heatmap-benchmark/'); qr.make();
+    $('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  }
+
+  /* template chrome: logo, yellow rule and footer bar on every content slide */
+  const slides = Array.from(document.querySelectorAll('.slide')), stage = $('stage');
+  slides.forEach((s, i) => {
+    if (s.classList.contains('title-slide')) return;
+    const logo = document.createElement('img'); logo.className = 'logo'; logo.src = 'assets/ugm-logo.png'; logo.alt = 'Universitas Gadjah Mada';
+    s.appendChild(logo);
+    const rule = document.createElement('div'); rule.className = 'yrule';
+    s.querySelector('h2').after(rule);
+    const foot = document.createElement('div'); foot.className = 'foot';
+    foot.innerHTML = '<span>LOCALLY ROOTED, GLOBALLY RESPECTED</span><span>' + (s.dataset.part || '').toUpperCase() + '</span><b>' + String(i + 1).padStart(2, '0') + '</b>';
+    s.appendChild(foot);
+  });
+
+  let current = 0;
+  function show(i, fromHash) {
+    current = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => {
+      s.classList.toggle('active', k === current);
+      if (k !== current) s.querySelectorAll('video').forEach((v) => v.pause());
+    });
+    if (!fromHash) history.replaceState(null, '', '#s' + (current + 1));
+  }
+  function fit() {
+    const k = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    stage.style.transform = 'translate(-50%, -50%) scale(' + k + ')';
+  }
+  const fromHash = () => { const m = /^#s(\d+)$/.exec(location.hash); return m ? parseInt(m[1], 10) - 1 : 0; };
+  window.addEventListener('resize', fit);
+  window.addEventListener('hashchange', () => show(fromHash(), true));
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'VIDEO' && (e.key === ' ' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return;
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); show(current + 1); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(current - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
+  });
+  $('prev').addEventListener('click', () => show(current - 1));
+  $('next').addEventListener('click', () => show(current + 1));
+  let touchX = null;
+  document.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX; touchX = null;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+  });
+  fit(); show(fromHash(), true);
+})();
+</script>
+</body>
+</html>
