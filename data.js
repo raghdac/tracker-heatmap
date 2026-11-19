@@ -1,5 +1,5 @@
 window.SITE_DATA = {
- "generated": "2026-11-19",
+ "generated": "2026-11-20",
  "preset": "ultralytics_default",
  "tracking": {
   "640": {

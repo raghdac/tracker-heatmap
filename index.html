@@ -11,7 +11,8 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-  /* Layout: one short reading column: question, two videos with one chart each, speed, findings. */
+  /* Layout: one short reading column: question, two videos with one chart each, speed, results.
+     All visible text lives in the T dictionary at the bottom (English and Indonesian). */
   :root {
     --bg: #f6f7f5;
     --surface: #ffffff;
@@ -29,7 +30,7 @@
     color-scheme: light; /* one light look by choice: it is shown on a projector next to light slides */
   }
   body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.55; }
-  .page { max-width: 920px; margin: 0 auto; padding-block: 40px 56px;
+  .page { max-width: 920px; margin: 0 auto; padding-block: 32px 56px;
           padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
           display: flex; flex-direction: column; gap: 48px; }
   h1, h2 { text-wrap: balance; margin: 0; font-weight: 600; line-height: 1.2; }
@@ -40,12 +41,14 @@
   .eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
   .muted { color: var(--ink-2); }
   section, header { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .topbar { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between; }
   .meta { display: flex; flex-wrap: wrap; gap: 2px 20px; font-size: 0.9rem; color: var(--ink-2); }
 
   .pipeline { display: flex; flex-wrap: wrap; gap: 8px; }
   .step { flex: 1 1 130px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px;
-          display: flex; flex-direction: column; gap: 2px; min-width: 0; font-weight: 600; }
-  .step span { font-size: 0.85rem; font-weight: 400; color: var(--ink-2); }
+          display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .step strong { font-weight: 600; }
+  .step span { font-size: 0.85rem; color: var(--ink-2); }
   .step.swap { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
   .dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
   .bg-baseline { background: var(--c-baseline); } .bg-deepsort { background: var(--c-deepsort); }
@@ -84,80 +87,83 @@
 <div class="page">
 
   <header>
-    <span class="eyebrow">Undergraduate thesis · results seminar · draft results</span>
-    <h1>Which tracker gives the best customer heatmap?</h1>
-    <p>One detector, three trackers, the same videos. Everything here is replayed from the saved experiment outputs.</p>
+    <div class="topbar">
+      <span class="eyebrow" data-t="eyebrow"></span>
+      <div class="seg" id="lang" role="group" aria-label="Language / Bahasa"></div>
+    </div>
+    <h1 data-t="title"></h1>
+    <p data-t="lead"></p>
     <div class="meta">
       <span>R. Raghda Hassa Parardhya Cornika</span>
-      <span>Electronics and Instrumentation, Universitas Gadjah Mada</span>
-      <span>Supervisor: Prof. Drs. Agus Harjoko, M.Sc., Ph.D.</span>
+      <span data-t="dept"></span>
+      <span data-t="supervisor"></span>
     </div>
   </header>
 
   <section>
-    <h2>Method: only the tracker changes</h2>
-    <div class="pipeline" role="img" aria-label="Pipeline: video, YOLOv8n detector, one of three trackers, heatmap, comparison with ground truth">
-      <div class="step">Video<span>MOT20, MOT17</span></div>
-      <div class="step">YOLOv8n<span>same detections for all</span></div>
-      <div class="step swap">Tracker<span>DeepSORT, ByteTrack or BoT-SORT</span></div>
-      <div class="step">Heatmap<span>foot points, Gaussian KDE</span></div>
-      <div class="step">Compare<span>with the ground truth</span></div>
+    <h2 data-t="methodTitle"></h2>
+    <div class="pipeline" id="pipeline" role="img">
+      <div class="step"><strong data-t="step1"></strong><span>MOT20, MOT17</span></div>
+      <div class="step"><strong>YOLOv8n</strong><span data-t="step2d"></span></div>
+      <div class="step swap"><strong>Tracker</strong><span data-t="step3d"></span></div>
+      <div class="step"><strong>Heatmap</strong><span data-t="step4d"></span></div>
+      <div class="step"><strong data-t="step5"></strong><span data-t="step5d"></span></div>
     </div>
   </section>
 
   <section>
-    <h2>1. Tracking</h2>
-    <p class="muted">Box colour is the identity. A colour change is an ID switch.</p>
+    <h2 data-t="trackTitle"></h2>
+    <p class="muted" data-t="trackLead"></p>
     <video controls muted loop playsinline preload="metadata" poster="video/tracking_MOT17-11.jpg" src="video/tracking_MOT17-11.mp4"></video>
     <div class="panel">
-      <div class="panel-head"><span>Tracking accuracy (HOTA, higher is better)</span><div class="seg" id="t-scenario"></div></div>
+      <div class="panel-head"><span data-t="trackChart"></span><div class="seg" id="t-scenario"></div></div>
       <div class="bars" id="t-bars"></div>
       <p class="note" id="t-reading"></p>
     </div>
   </section>
 
   <section>
-    <h2>2. Heatmaps</h2>
-    <p class="muted">Time-lapse of one sequence. Switch the detector input size to see what changes most.</p>
+    <h2 data-t="heatTitle"></h2>
+    <p class="muted" data-t="heatLead"></p>
     <div class="seg" id="h-res"></div>
     <video id="v-heatmap" controls muted loop playsinline preload="metadata"></video>
     <div class="panel">
-      <div class="panel-head"><span>Similarity to the ground-truth heatmap (SSIM, higher is better)</span></div>
+      <div class="panel-head"><span data-t="heatChart"></span></div>
       <div class="bars" id="h-bars"></div>
       <p class="note" id="h-reading"></p>
     </div>
   </section>
 
   <section>
-    <h2>3. Speed</h2>
+    <h2 data-t="speedTitle"></h2>
     <div class="panel">
-      <div class="panel-head"><span>Frames per second, crowded scenes</span></div>
+      <div class="panel-head"><span data-t="speedChart"></span></div>
       <div class="bars" id="s-bars"></div>
-      <p class="note">Detector on a GTX 1650 SUPER, trackers on the CPU. DeepSORT's appearance model runs on the CPU. Bars run from 0 to 80.</p>
+      <p class="note" data-t="speedNote"></p>
     </div>
   </section>
 
   <section>
-    <h2>Findings</h2>
+    <h2 data-t="findTitle"></h2>
     <div class="findings">
-      <div class="finding"><strong>BoT-SORT is the most accurate</strong><span>But only by a small margin.</span></div>
-      <div class="finding"><strong>Tracking barely changes the heatmap</strong><span>SSIM 0.683 without a tracker, 0.702 with the best one.</span></div>
-      <div class="finding"><strong>The detector matters most</strong><span>A 1280 px input lifts SSIM to about 0.89.</span></div>
+      <div class="finding"><strong data-t="find1"></strong><span data-t="find1d"></span></div>
+      <div class="finding"><strong data-t="find2"></strong><span data-t="find2d"></span></div>
+      <div class="finding"><strong data-t="find3"></strong><span data-t="find3d"></span></div>
     </div>
   </section>
 
   <section>
-    <h2>Limits</h2>
+    <h2 data-t="limitTitle"></h2>
     <ul>
-      <li>Three sequences per scenario: the comparison is descriptive.</li>
-      <li>MOT17 and MOT20 are pedestrian benchmarks. The retail scenario is still to be run.</li>
-      <li>YOLOv8n is used off the shelf, without fine-tuning.</li>
+      <li data-t="limit1"></li>
+      <li data-t="limit2"></li>
+      <li data-t="limit3"></li>
     </ul>
   </section>
 
   <footer>
     <span id="foot-generated"></span>
-    <span>Video frames and annotations: MOT17 (Milan et al., 2016) and MOT20 (Dendorfer et al., 2020), MOTChallenge, CC BY-NC-SA 3.0, shown for academic, non-commercial use.</span>
+    <span data-t="credit"></span>
   </footer>
 </div>
 
@@ -166,54 +172,143 @@
 (function () {
   const D = window.SITE_DATA;
   const $ = (id) => document.getElementById(id);
-  const NAME = { baseline: 'Detection only', deepsort: 'DeepSORT', bytetrack: 'ByteTrack', botsort: 'BoT-SORT' };
+
+  const T = {
+    en: {
+      eyebrow: 'Undergraduate thesis · Results seminar · Draft',
+      title: 'Which tracker makes the best customer heatmap?',
+      lead: 'Same detector, same videos. Only the tracker is different. The videos and numbers below come from my experiment results.',
+      dept: 'Electronics and Instrumentation, Universitas Gadjah Mada',
+      supervisor: 'Supervisor: Prof. Drs. Agus Harjoko, M.Sc., Ph.D.',
+      methodTitle: 'How it works: only the tracker changes',
+      pipelineLabel: 'Steps: video, YOLOv8n detector, one of three trackers, heatmap, comparison with the ground truth',
+      step1: 'Video', step2d: 'finds the people', step3d: 'DeepSORT, ByteTrack or BoT-SORT',
+      step4d: 'shows where people walk', step5: 'Compare', step5d: 'with the correct answer (ground truth)',
+      trackTitle: '1. Tracking',
+      trackLead: 'Each colour is one person. If the colour changes, the tracker gave that person a new ID (an ID switch).',
+      trackChart: 'Tracking score (HOTA). Higher is better.',
+      crowded: 'Crowded place (MOT20)', moving: 'Moving camera (MOT17)',
+      trackReading: '{best} is the best and {last} is the lowest. The difference is {gap}. Bars go from 0 to {max}.',
+      heatTitle: '2. Heatmaps',
+      heatLead: 'A sped-up video of one scene. Change the detector image size to see the biggest difference.',
+      res: 'Image size {res} px',
+      heatChart: 'How close the heatmap is to the correct one (SSIM). Higher is better.',
+      heatReading: 'At {res} px, a tracker adds only {gain} compared with no tracker. A bigger image (640 to 1280 px) adds {gainRes}. Bars go from 0 to 1.',
+      speedTitle: '3. Speed',
+      speedChart: 'Frames per second in crowded scenes. Higher is faster.',
+      speedNote: 'The detector runs on a GTX 1650 SUPER and the trackers on the CPU. DeepSORT is the slowest because its appearance model also runs on the CPU. Bars go from 0 to 80.',
+      findTitle: 'Main results',
+      find1: 'BoT-SORT is the most accurate', find1d: 'But the difference is small.',
+      find2: 'A tracker changes the heatmap very little', find2d: 'SSIM is {base} with no tracker and {best} with the best tracker.',
+      find3: 'The detector matters most', find3d: 'A bigger image (1280 px) raises SSIM to about {big}.',
+      limitTitle: 'Limits of this study',
+      limit1: 'Only three videos per scenario, so the differences are not yet statistically confirmed.',
+      limit2: 'MOT17 and MOT20 show people on streets and in public places, not in a shop. The retail test is not done yet.',
+      limit3: 'YOLOv8n is used as it is, with no extra training.',
+      generated: 'Data made on {date}. These are draft results for the results seminar.',
+      credit: 'Video frames and annotations: MOT17 (Milan et al., 2016) and MOT20 (Dendorfer et al., 2020), MOTChallenge, CC BY-NC-SA 3.0, shown for academic, non-commercial use.',
+      baseline: 'No tracker',
+    },
+    id: {
+      eyebrow: 'Skripsi S1 · Seminar hasil · Draf',
+      title: 'Tracker mana yang menghasilkan heatmap pelanggan terbaik?',
+      lead: 'Detektor sama, video sama. Yang berbeda hanya tracker-nya. Video dan angka di bawah berasal dari hasil eksperimen saya.',
+      dept: 'Elektronika dan Instrumentasi, Universitas Gadjah Mada',
+      supervisor: 'Pembimbing: Prof. Drs. Agus Harjoko, M.Sc., Ph.D.',
+      methodTitle: 'Cara kerja: hanya tracker yang diganti',
+      pipelineLabel: 'Langkah: video, detektor YOLOv8n, salah satu dari tiga tracker, heatmap, perbandingan dengan data acuan',
+      step1: 'Video', step2d: 'mendeteksi orang', step3d: 'DeepSORT, ByteTrack, atau BoT-SORT',
+      step4d: 'menunjukkan tempat orang berjalan', step5: 'Bandingkan', step5d: 'dengan data acuan (ground truth)',
+      trackTitle: '1. Pelacakan',
+      trackLead: 'Satu warna berarti satu orang. Kalau warnanya berubah, tracker memberi ID baru ke orang itu (ID switch).',
+      trackChart: 'Skor pelacakan (HOTA). Makin tinggi makin baik.',
+      crowded: 'Tempat ramai (MOT20)', moving: 'Kamera bergerak (MOT17)',
+      trackReading: '{best} paling baik dan {last} paling rendah. Selisihnya {gap}. Batang dari 0 sampai {max}.',
+      heatTitle: '2. Heatmap',
+      heatLead: 'Video dipercepat dari satu adegan. Ganti ukuran gambar detektor untuk melihat perbedaan terbesar.',
+      res: 'Ukuran gambar {res} px',
+      heatChart: 'Kemiripan heatmap dengan heatmap acuan (SSIM). Makin tinggi makin baik.',
+      heatReading: 'Pada {res} px, tracker hanya menambah {gain} dibanding tanpa tracker. Gambar yang lebih besar (640 ke 1280 px) menambah {gainRes}. Batang dari 0 sampai 1.',
+      speedTitle: '3. Kecepatan',
+      speedChart: 'Frame per detik di adegan ramai. Makin tinggi makin cepat.',
+      speedNote: 'Detektor berjalan di GTX 1650 SUPER dan tracker di CPU. DeepSORT paling lambat karena model appearance-nya juga berjalan di CPU. Batang dari 0 sampai 80.',
+      findTitle: 'Hasil utama',
+      find1: 'BoT-SORT paling akurat', find1d: 'Tetapi selisihnya kecil.',
+      find2: 'Tracker hanya sedikit mengubah heatmap', find2d: 'SSIM {base} tanpa tracker dan {best} dengan tracker terbaik.',
+      find3: 'Detektor paling berpengaruh', find3d: 'Gambar yang lebih besar (1280 px) menaikkan SSIM menjadi sekitar {big}.',
+      limitTitle: 'Batasan penelitian',
+      limit1: 'Hanya tiga video per skenario, jadi perbedaannya belum terbukti secara statistik.',
+      limit2: 'MOT17 dan MOT20 berisi orang di jalan dan tempat umum, bukan di toko. Uji di toko ritel belum dilakukan.',
+      limit3: 'YOLOv8n dipakai apa adanya, tanpa pelatihan tambahan.',
+      generated: 'Data dibuat pada {date}. Ini hasil draf untuk seminar hasil.',
+      credit: 'Frame video dan anotasi: MOT17 (Milan dkk., 2016) dan MOT20 (Dendorfer dkk., 2020), MOTChallenge, CC BY-NC-SA 3.0, ditampilkan untuk keperluan akademik nonkomersial.',
+      baseline: 'Tanpa tracker',
+    },
+  };
+  const LANGS = { en: 'English', id: 'Indonesia' };
   const TRACKERS = ['deepsort', 'bytetrack', 'botsort'];
   const CONFIGS = ['baseline'].concat(TRACKERS);
-  const f3 = (v) => v.toFixed(3), f1 = (v) => v.toFixed(1);
+  const state = { lang: 'en', scenario: 'crowded', res: '640' };
+
+  /* the language choice is a per-viewer convenience: ?lang=id in the link, else the last choice in this browser */
+  try {
+    const wanted = new URLSearchParams(location.search).get('lang') || localStorage.getItem('lang');
+    if (T[wanted]) state.lang = wanted;
+  } catch (e) { /* storage can be blocked; English is the default */ }
+
+  const t = (key, vars) => T[state.lang][key].replace(/\{(\w+)\}/g, (_, k) => vars[k]);
+  const num = (v, digits) => { const s = v.toFixed(digits); return state.lang === 'id' ? s.replace('.', ',') : s; };
+  const name = (k) => ({ baseline: t('baseline'), deepsort: 'DeepSORT', bytetrack: 'ByteTrack', botsort: 'BoT-SORT' })[k];
 
   function segmented(el, options, value, onChange) {
+    el.innerHTML = '';
     Object.entries(options).forEach(([key, label]) => {
       const b = document.createElement('button');
       b.type = 'button'; b.textContent = label; b.setAttribute('aria-pressed', String(key === value));
-      b.addEventListener('click', () => {
-        el.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-        onChange(key);
-      });
+      b.addEventListener('click', () => onChange(key));
       el.appendChild(b);
     });
   }
 
-  function bars(el, keys, value, max, fmt) {
+  function bars(el, keys, value, max, digits) {
     el.innerHTML = keys.map((k) =>
-      '<div class="bar-row" title="' + NAME[k] + ': ' + fmt(value(k)) + '">' +
-      '<span class="bar-label"><i class="dot bg-' + k + '"></i>' + NAME[k] + '</span>' +
+      '<div class="bar-row" title="' + name(k) + ': ' + num(value(k), digits) + '">' +
+      '<span class="bar-label"><i class="dot bg-' + k + '"></i>' + name(k) + '</span>' +
       '<span class="bar-track"><span class="bar bg-' + k + '" style="width:' + (value(k) / max * 100).toFixed(2) + '%"></span></span>' +
-      '<span class="bar-value">' + fmt(value(k)) + '</span></div>').join('');
+      '<span class="bar-value">' + num(value(k), digits) + '</span></div>').join('');
   }
 
-  function drawTracking(scenario) {
-    const data = D.tracking['640'][scenario];
-    bars($('t-bars'), TRACKERS, (k) => data[k].HOTA, 0.4, f3);
-    const order = TRACKERS.slice().sort((a, b) => data[b].HOTA - data[a].HOTA);
-    $('t-reading').textContent = NAME[order[0]] + ' is best, ' + NAME[order[2]] + ' is last. The gap is ' + f3(data[order[0]].HOTA - data[order[2]].HOTA) + '. Bars run from 0 to 0.4.';
-  }
-  segmented($('t-scenario'), { crowded: 'Crowded (MOT20)', moving: 'Moving camera (MOT17)' }, 'crowded', drawTracking);
-  drawTracking('crowded');
+  function render() {
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll('[data-t]').forEach((el) => { if (T[state.lang][el.dataset.t].indexOf('{') < 0) el.textContent = t(el.dataset.t); });
+    $('pipeline').setAttribute('aria-label', t('pipelineLabel'));
+    segmented($('lang'), LANGS, state.lang, (key) => {
+      state.lang = key;
+      try { localStorage.setItem('lang', key); } catch (e) { /* not saved; the page still switches */ }
+      render();
+    });
 
-  function drawHeat(res) {
-    const v = $('v-heatmap'), base = 'video/heatmap_MOT20-02_' + res;
-    v.poster = base + '.jpg'; v.src = base + '.mp4';
-    const data = D.heat[res];
-    bars($('h-bars'), CONFIGS, (k) => data[k].SSIM, 1, f3);
-    const best = Math.max.apply(null, TRACKERS.map((k) => data[k].SSIM));
-    $('h-reading').textContent = 'At ' + res + ' px, tracking adds ' + f3(best - data.baseline.SSIM) + ' over detection only. Going from 640 to 1280 px adds ' +
-      f3(D.heat['1280'].baseline.SSIM - D.heat['640'].baseline.SSIM) + '. Bars run from 0 to 1.';
-  }
-  segmented($('h-res'), { '640': 'Detector at 640 px', '1280': 'Detector at 1280 px' }, '640', drawHeat);
-  drawHeat('640');
+    const track = D.tracking['640'][state.scenario];
+    segmented($('t-scenario'), { crowded: t('crowded'), moving: t('moving') }, state.scenario, (key) => { state.scenario = key; render(); });
+    bars($('t-bars'), TRACKERS, (k) => track[k].HOTA, 0.4, 3);
+    const order = TRACKERS.slice().sort((a, b) => track[b].HOTA - track[a].HOTA);
+    $('t-reading').textContent = t('trackReading', { best: name(order[0]), last: name(order[2]), gap: num(track[order[0]].HOTA - track[order[2]].HOTA, 3), max: num(0.4, 1) });
 
-  bars($('s-bars'), CONFIGS, (k) => D.runtime.crowded[k], 80, f1);
-  $('foot-generated').textContent = 'Data generated on ' + D.generated + '. Results are a draft for the results seminar.';
+    const video = $('v-heatmap'), base = 'video/heatmap_MOT20-02_' + state.res;
+    if (video.dataset.res !== state.res) { video.dataset.res = state.res; video.poster = base + '.jpg'; video.src = base + '.mp4'; }
+    const heat = D.heat[state.res];
+    segmented($('h-res'), { '640': t('res', { res: 640 }), '1280': t('res', { res: 1280 }) }, state.res, (key) => { state.res = key; render(); });
+    bars($('h-bars'), CONFIGS, (k) => heat[k].SSIM, 1, 3);
+    const best = (r) => Math.max.apply(null, TRACKERS.map((k) => D.heat[r][k].SSIM));
+    $('h-reading').textContent = t('heatReading', { res: state.res, gain: num(best(state.res) - heat.baseline.SSIM, 3),
+      gainRes: num(D.heat['1280'].baseline.SSIM - D.heat['640'].baseline.SSIM, 3) });
+
+    bars($('s-bars'), CONFIGS, (k) => D.runtime.crowded[k], 80, 1);
+    document.querySelector('[data-t="find2d"]').textContent = t('find2d', { base: num(D.heat['640'].baseline.SSIM, 3), best: num(best('640'), 3) });
+    document.querySelector('[data-t="find3d"]').textContent = t('find3d', { big: num(best('1280'), 2) });
+    $('foot-generated').textContent = t('generated', { date: D.generated });
+  }
+  render();
 })();
 </script>
 
