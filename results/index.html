@@ -46,12 +46,26 @@
   .topbar { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between; }
   .meta { display: flex; flex-wrap: wrap; gap: 2px 20px; font-size: 0.9rem; color: var(--ink-2); }
 
-  .pipeline { display: flex; flex-wrap: wrap; gap: 8px; }
-  .step { flex: 1 1 130px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px;
-          display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .step strong { font-weight: 600; }
-  .step span { font-size: 0.85rem; color: var(--ink-2); }
-  .step.swap { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
+  /* flowchart: boxes joined by arrows, left to right; top to bottom on a narrow screen */
+  .flow { list-style: none; margin: 0; padding: 0; max-width: none; display: flex; flex-direction: row; align-items: center; gap: 32px; }
+  .node { position: relative; flex: 1 1 0; background: var(--surface); border: 1.5px solid var(--axis); border-radius: 8px; padding: 12px;
+          display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .node-head { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .num { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--bg); border: 1px solid var(--axis);
+         font-family: var(--mono); font-size: 0.8rem; display: grid; place-items: center; }
+  .node-text { font-size: 0.88rem; color: var(--ink-2); }
+  .node.swap { border-color: var(--accent); border-width: 2px; background: #eef5f9; }
+  .node.swap .num { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+  .opts { display: flex; flex-direction: column; gap: 3px; font-size: 0.9rem; }
+  .opts span { display: flex; align-items: center; gap: 8px; }
+  .node + .node::before { content: ""; position: absolute; top: 50%; left: -27px; width: 20px; height: 2px; background: var(--ink-2); transform: translateY(-50%); }
+  .node + .node::after { content: ""; position: absolute; top: 50%; left: -16px; width: 8px; height: 8px;
+                         border-top: 2px solid var(--ink-2); border-right: 2px solid var(--ink-2); transform: translateY(-50%) rotate(45deg); }
+  @media (max-width: 760px) {
+    .flow { flex-direction: column; align-items: stretch; gap: 30px; }
+    .node + .node::before { top: -25px; left: 23px; width: 2px; height: 20px; transform: none; }
+    .node + .node::after { top: -15px; left: 19px; transform: rotate(135deg); }
+  }
   .dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
   .bg-baseline { background: var(--c-baseline); } .bg-deepsort { background: var(--c-deepsort); }
   .bg-bytetrack { background: var(--c-bytetrack); } .bg-botsort { background: var(--c-botsort); }
@@ -104,13 +118,15 @@
 
   <section>
     <h2 data-t="methodTitle"></h2>
-    <div class="pipeline" id="pipeline" role="img">
-      <div class="step"><strong data-t="step1"></strong><span>MOT20, MOT17</span></div>
-      <div class="step"><strong>YOLOv8n</strong><span data-t="step2d"></span></div>
-      <div class="step swap"><strong>Tracker</strong><span data-t="step3d"></span></div>
-      <div class="step"><strong>Heatmap</strong><span data-t="step4d"></span></div>
-      <div class="step"><strong data-t="step5"></strong><span data-t="step5d"></span></div>
-    </div>
+    <ol class="flow" id="pipeline">
+      <li class="node"><span class="node-head"><span class="num">1</span><span data-t="step1"></span></span><span class="node-text">MOT20, MOT17</span></li>
+      <li class="node"><span class="node-head"><span class="num">2</span>YOLOv8n</span><span class="node-text" data-t="step2d"></span></li>
+      <li class="node swap"><span class="node-head"><span class="num">3</span>Tracker</span><span class="node-text" data-t="step3d"></span>
+        <span class="opts"><span><i class="dot bg-deepsort"></i>DeepSORT</span><span><i class="dot bg-bytetrack"></i>ByteTrack</span><span><i class="dot bg-botsort"></i>BoT-SORT</span></span></li>
+      <li class="node"><span class="node-head"><span class="num">4</span>Heatmap</span><span class="node-text" data-t="step4d"></span></li>
+      <li class="node"><span class="node-head"><span class="num">5</span><span data-t="step5"></span></span><span class="node-text" data-t="step5d"></span></li>
+    </ol>
+    <p class="note" data-t="flowNote"></p>
   </section>
 
   <section id="live">
@@ -192,8 +208,9 @@
       supervisor: 'Supervisor: Prof. Drs. Agus Harjoko, M.Sc., Ph.D.',
       methodTitle: 'How it works: only the tracker changes',
       pipelineLabel: 'Steps: video, YOLOv8n detector, one of three trackers, heatmap, comparison with the ground truth',
-      step1: 'Video', step2d: 'finds the people', step3d: 'DeepSORT, ByteTrack or BoT-SORT',
+      step1: 'Video', step2d: 'finds the people', step3d: 'one of three:',
       step4d: 'shows where people walk', step5: 'Compare', step5d: 'with the correct answer (ground truth)',
+      flowNote: 'Only step 3 changes. The other steps are the same for every tracker. For comparison, step 3 is also skipped (no tracker).',
       liveTitle: 'The code running',
       liveLead: 'A screen recording from my PC. Left: the code in the editor. Bottom right: the terminal that runs it. Top right: the result, frame by frame. Nothing in this video is replayed from saved results.',
       trackTitle: '1. Tracking',
@@ -230,8 +247,9 @@
       supervisor: 'Pembimbing: Prof. Drs. Agus Harjoko, M.Sc., Ph.D.',
       methodTitle: 'Cara kerja: hanya tracker yang diganti',
       pipelineLabel: 'Langkah: video, detektor YOLOv8n, salah satu dari tiga tracker, heatmap, perbandingan dengan data acuan',
-      step1: 'Video', step2d: 'mendeteksi orang', step3d: 'DeepSORT, ByteTrack, atau BoT-SORT',
+      step1: 'Video', step2d: 'mendeteksi orang', step3d: 'satu dari tiga:',
       step4d: 'menunjukkan tempat orang berjalan', step5: 'Bandingkan', step5d: 'dengan data acuan (ground truth)',
+      flowNote: 'Hanya langkah 3 yang diganti. Langkah lain sama untuk semua tracker. Sebagai pembanding, langkah 3 juga dilewati (tanpa tracker).',
       liveTitle: 'Kode saat berjalan',
       liveLead: 'Rekaman layar dari PC saya. Kiri: kode di editor. Kanan bawah: terminal yang menjalankannya. Kanan atas: hasilnya, frame demi frame. Tidak ada bagian video ini yang diputar ulang dari hasil tersimpan.',
       trackTitle: '1. Pelacakan',
