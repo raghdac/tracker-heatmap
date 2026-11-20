@@ -122,7 +122,7 @@
   <section id="tracking">
     <h2 data-t="trackTitle"></h2>
     <p class="muted" data-t="trackLead"></p>
-    <video controls muted loop playsinline preload="metadata" poster="video/tracking_MOT17-11.jpg" src="video/tracking_MOT17-11.mp4"></video>
+    <video controls muted loop playsinline preload="metadata" poster="video/workspace_tracking_MOT17-11.jpg" src="video/workspace_tracking_MOT17-11.mp4"></video>
     <div class="panel">
       <div class="panel-head"><span data-t="trackChart"></span><div class="seg" id="t-scenario"></div></div>
       <div class="bars" id="t-bars"></div>
@@ -132,6 +132,8 @@
 
   <section id="heatmaps">
     <h2 data-t="heatTitle"></h2>
+    <p class="muted" data-t="heatLiveLead"></p>
+    <video controls muted loop playsinline preload="metadata" poster="video/workspace_heatmap_MOT20-02.jpg" src="video/workspace_heatmap_MOT20-02.mp4"></video>
     <p class="muted" data-t="heatLead"></p>
     <div class="seg" id="h-res"></div>
     <video id="v-heatmap" controls muted loop playsinline preload="metadata"></video>
@@ -195,12 +197,13 @@
       liveTitle: 'The code running',
       liveLead: 'A screen recording from my PC. Left: the code in the editor. Bottom right: the terminal that runs it. Top right: the result, frame by frame. Nothing in this video is replayed from saved results.',
       trackTitle: '1. Tracking',
-      trackLead: 'Each colour is one person. If the colour changes, the tracker gave that person a new ID (an ID switch).',
+      trackLead: 'A screen recording from my PC: the three trackers run on the same detections, next to the correct answer (ground truth). Each colour is one person. If the colour changes, the tracker gave that person a new ID (an ID switch).',
       trackChart: 'Tracking score (HOTA). Higher is better.',
       crowded: 'Crowded place (MOT20)', moving: 'Moving camera (MOT17)',
       trackReading: '{best} is the best and {last} is the lowest. The difference is {gap}. Bars go from 0 to {max}.',
       heatTitle: '2. Heatmaps',
-      heatLead: 'A sped-up video of one scene. Change the detector image size to see the biggest difference.',
+      heatLiveLead: 'A screen recording from my PC: the heatmaps grow while the code runs. This is a live preview of the first 350 frames.',
+      heatLead: 'The finished heatmaps of the whole video, sped up. Change the detector image size to see the biggest difference.',
       res: 'Image size {res} px',
       heatChart: 'How close the heatmap is to the correct one (SSIM). Higher is better.',
       heatReading: 'At {res} px, a tracker adds only {gain} compared with no tracker. A bigger image (640 to 1280 px) adds {gainRes}. Bars go from 0 to 1.',
@@ -232,12 +235,13 @@
       liveTitle: 'Kode saat berjalan',
       liveLead: 'Rekaman layar dari PC saya. Kiri: kode di editor. Kanan bawah: terminal yang menjalankannya. Kanan atas: hasilnya, frame demi frame. Tidak ada bagian video ini yang diputar ulang dari hasil tersimpan.',
       trackTitle: '1. Pelacakan',
-      trackLead: 'Satu warna berarti satu orang. Kalau warnanya berubah, tracker memberi ID baru ke orang itu (ID switch).',
+      trackLead: 'Rekaman layar dari PC saya: tiga tracker berjalan pada deteksi yang sama, di samping data acuan (ground truth). Satu warna berarti satu orang. Kalau warnanya berubah, tracker memberi ID baru ke orang itu (ID switch).',
       trackChart: 'Skor pelacakan (HOTA). Makin tinggi makin baik.',
       crowded: 'Tempat ramai (MOT20)', moving: 'Kamera bergerak (MOT17)',
       trackReading: '{best} paling baik dan {last} paling rendah. Selisihnya {gap}. Batang dari 0 sampai {max}.',
       heatTitle: '2. Heatmap',
-      heatLead: 'Video dipercepat dari satu adegan. Ganti ukuran gambar detektor untuk melihat perbedaan terbesar.',
+      heatLiveLead: 'Rekaman layar dari PC saya: heatmap tumbuh selagi kode berjalan. Ini pratinjau langsung dari 350 frame pertama.',
+      heatLead: 'Heatmap jadi dari seluruh video, dipercepat. Ganti ukuran gambar detektor untuk melihat perbedaan terbesar.',
       res: 'Ukuran gambar {res} px',
       heatChart: 'Kemiripan heatmap dengan heatmap acuan (SSIM). Makin tinggi makin baik.',
       heatReading: 'Pada {res} px, tracker hanya menambah {gain} dibanding tanpa tracker. Gambar yang lebih besar (640 ke 1280 px) menambah {gainRes}. Batang dari 0 sampai 1.',
