@@ -149,7 +149,7 @@
         <b>1</b><span>Background and gap</span>
         <b class="y">2</b><span class="y">Method</span>
         <b>3</b><span>Results and discussion</span>
-        <b class="y">4</b><span class="y">Conclusions</span>
+        <b class="y">4</b><span class="y">Summary and next steps</span>
       </div>
     </div>
   </section>
@@ -159,15 +159,15 @@
     <h2>Why This Study?</h2>
     <div class="body">
       <div class="cols c3">
-        <div class="card"><h3>Most shops are offline</h3><p class="small">57.98% of Indonesian businesses (BPS, 2024).</p></div>
+        <div class="card"><h3>Most shops are offline</h3><p class="small">57.98% of businesses sell only offline (BPS, 2024).</p></div>
         <div class="card y"><h3>A heatmap shows the busy areas</h3><p class="small">Where customers walk and stop.</p></div>
         <div class="card"><h3>CCTV is already there</h3><p class="small">No new sensors needed.</p></div>
       </div>
       <table>
         <thead><tr><th class="l" style="width:50%">Earlier studies (Shili et al., 2024; Şimşek and Tekbaş, 2024)</th><th class="l">This thesis</th></tr></thead>
         <tbody>
-          <tr><td>Use only DeepSORT</td><td class="l">Compares DeepSORT, ByteTrack and BoT-SORT</td></tr>
-          <tr><td>Do not measure the tracking</td><td class="l">Measures it: HOTA, MOTA, IDF1</td></tr>
+          <tr><td>Use one tracker only (DeepSORT)</td><td class="l">Compares DeepSORT, ByteTrack and BoT-SORT</td></tr>
+          <tr><td>Report detection scores, not tracking scores</td><td class="l">Reports tracking scores: HOTA, MOTA, IDF1</td></tr>
           <tr><td>Check the heatmap by eye</td><td class="l">Scores each heatmap and links it to tracking</td></tr>
         </tbody>
       </table>
@@ -303,8 +303,8 @@
       <div class="cols c-wide">
         <img class="fig" src="../figures/f_presets.png" alt="HOTA of the three trackers under three threshold settings">
         <div class="stack">
-          <div class="card"><h3>It changes with the settings</h3><p class="small">With the proposal settings (Table 3.6), DeepSORT is first: 81% of detections score below 0.6, so ByteTrack and BoT-SORT ignore them.</p></div>
-          <div class="card y"><h3>Three videos are too few</h3><p class="small">Smallest p-value possible with 3 videos: <b>0.25</b>. Needed: <b>0.05</b>.</p></div>
+          <div class="card"><h3>It changes with the settings</h3><p class="small">With the proposal settings (Table 3.6), DeepSORT is first. In the crowd, 81% of detections score below 0.6, so ByteTrack and BoT-SORT cannot start tracks from them.</p></div>
+          <div class="card y"><h3>Three videos are too few</h3><p class="small">With 3 videos, a pairwise test cannot go below p = <b>0.25</b>. Needed: <b>0.05</b>.</p></div>
         </div>
       </div>
       <p class="takeaway">BoT-SORT scores highest, but <em>this is not yet statistically confirmed</em>.</p>
@@ -325,7 +325,7 @@
   </section>
 
   <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter VI · Speed and practical use</span>
+    <span class="kicker">Chapters V and VI · Speed and practical use</span>
     <h2>Speed, and What This Means for a Shop</h2>
     <div class="body roomy">
       <div class="stack"><h3>Frames per second, crowded place</h3><div class="bars" id="b-fps"></div></div>
@@ -337,9 +337,9 @@
     </div>
   </section>
 
-  <section class="slide" data-part="Conclusions">
-    <span class="kicker">Chapter VI · Conclusions and suggestions</span>
-    <h2>Conclusions, Limits and Next Steps</h2>
+  <section class="slide" data-part="Summary">
+    <span class="kicker">Chapter VI · Discussion</span>
+    <h2>Findings So Far, Limits and Next Steps</h2>
     <div class="body roomy">
       <div class="cols c-wide">
         <ol>
@@ -354,6 +354,7 @@
             <ul class="small"><li>Run the shop test (10+ videos)</li><li>Repeat the statistical test</li><li>Try a better detector</li></ul></div>
         </div>
       </div>
+      <p class="small muted">These findings are preliminary. The final conclusions come after the shop test.</p>
     </div>
   </section>
 
