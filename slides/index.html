@@ -8,7 +8,7 @@
 <style>
   /* Look of the UGM slide template used for the proposal seminar: white slides, navy titles, yellow rule, navy footer bar.
      Every slide is drawn on a fixed 1280 x 720 stage that is scaled to the window; printing gives one slide per page.
-     Wording rule: plain words that can be said aloud; one idea per slide; technical names only where the audience needs them. */
+     Wording rule: plain words that can be said aloud; few slides, each one filled; technical names only where the audience needs them. */
   :root {
     --navy: #00446a; --navy-bar: #06486e; --yellow: #ffd200; --gold: #c9a300;
     --ink: #1c2530; --ink-2: #55606b; --rule: #dfe6ec; --axis: #b9c4cd; --tint: #eaf3f9; --tint-y: #fffbe9; --room: #1b1d21;
@@ -30,7 +30,7 @@
   .yrule { width: 916px; height: 4px; background: var(--yellow); border-radius: 2px; flex: none; }
   .body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
   .cols { display: grid; gap: 24px; align-items: start; }
-  .c2 { grid-template-columns: 1fr 1fr; } .c3 { grid-template-columns: repeat(3, 1fr); } .c-wide { grid-template-columns: 1.5fr 1fr; align-items: center; }
+  .c2 { grid-template-columns: 1fr 1fr; } .c3 { grid-template-columns: repeat(3, 1fr); align-items: stretch; } .c-wide { grid-template-columns: 1.5fr 1fr; align-items: center; }
   .card { background: #ffffff; border: 1px solid var(--rule); border-left: 8px solid var(--navy); border-radius: 10px; padding: 14px 18px;
           display: flex; flex-direction: column; gap: 6px; box-shadow: 0 2px 5px rgba(0, 40, 70, 0.10); }
   .card.y { border-left-color: var(--gold); background: var(--tint-y); }
@@ -73,6 +73,16 @@
   .bar { display: block; height: 100%; border-radius: 0 5px 5px 0; }
   .bar-value { font-variant-numeric: tabular-nums; font-size: 23px; font-weight: 700; text-align: right; }
   .scale-note { font-size: 13px; color: var(--ink-2); }
+  .stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .c2 .bar-row { grid-template-columns: 150px 1fr 80px; }
+  /* slides with little content: bigger type and more air inside the blocks, so the slide is filled */
+  .roomy { font-size: 24px; gap: 26px; }
+  .roomy .small { font-size: 21px; } .roomy h3 { font-size: 24px; } .roomy .card { padding: 18px 22px; gap: 8px; }
+  .roomy .step { font-size: 19px; padding: 18px 16px; } .roomy .step strong { font-size: 24px; }
+  .roomy table { font-size: 23px; } .roomy td { padding: 13px 14px 13px 0; } .roomy th { font-size: 17px; }
+  .roomy .bars { gap: 14px; } .roomy .bar-track { height: 32px; } .roomy .big b { font-size: 48px; } .roomy .big span { font-size: 19px; }
+  .roomy .takeaway { font-size: 23px; } .roomy ol { gap: 18px; }
+  .airy td { padding: 22px 14px 22px 0; }
 
   table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 18px; width: 100%; }
   th, td { padding: 7px 14px 7px 0; text-align: right; border-bottom: 1px solid var(--rule); }
@@ -136,133 +146,85 @@
     <h2>Presentation Overview</h2>
     <div class="body">
       <div class="agenda">
-        <b>1</b><span>Introduction: the problem and the goals</span>
-        <b class="y">2</b><span class="y">Literature review: what is still missing</span>
-        <b>3</b><span>Method: one detector, three trackers</span>
-        <b class="y">4</b><span class="y">Results and discussion</span>
-        <b>5</b><span>Conclusions and next steps</span>
+        <b>1</b><span>Background and gap</span>
+        <b class="y">2</b><span class="y">Method</span>
+        <b>3</b><span>Results and discussion</span>
+        <b class="y">4</b><span class="y">Conclusions</span>
       </div>
     </div>
   </section>
 
   <section class="slide" data-part="Introduction">
-    <span class="kicker">Chapter I · Introduction</span>
-    <h2>Why Customer Movement Heatmaps?</h2>
+    <span class="kicker">Chapters I and II · Background and gap</span>
+    <h2>Why This Study?</h2>
     <div class="body">
       <div class="cols c3">
-        <div class="card"><h3>Most shops are still offline</h3><p class="small">57.98% of Indonesian businesses sell only offline (BPS, 2024).</p></div>
-        <div class="card y"><h3>A heatmap shows the busy areas</h3><p class="small">The shop owner sees where customers walk and stop.</p></div>
-        <div class="card"><h3>CCTV is already installed</h3><p class="small">A computer can turn the video into a heatmap. No new sensors.</p></div>
+        <div class="card"><h3>Most shops are offline</h3><p class="small">57.98% of Indonesian businesses (BPS, 2024).</p></div>
+        <div class="card y"><h3>A heatmap shows the busy areas</h3><p class="small">Where customers walk and stop.</p></div>
+        <div class="card"><h3>CCTV is already there</h3><p class="small">No new sensors needed.</p></div>
       </div>
-      <p class="takeaway">Which tracker should a shop use, and <em>does the choice really matter</em> for the heatmap?</p>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Introduction">
-    <span class="kicker">Chapter I · Problems and objectives</span>
-    <h2>Three Problems, Three Objectives</h2>
-    <div class="body">
       <table>
-        <thead><tr><th class="l" style="width:48%">Problem in earlier studies</th><th class="l">Objective of this thesis</th></tr></thead>
+        <thead><tr><th class="l" style="width:50%">Earlier studies (Shili et al., 2024; Şimşek and Tekbaş, 2024)</th><th class="l">This thesis</th></tr></thead>
         <tbody>
-          <tr><td>They use only DeepSORT, an older tracker</td><td class="l">Compare DeepSORT, ByteTrack and BoT-SORT</td></tr>
-          <tr><td>They do not measure the tracking itself</td><td class="l">Measure tracking with MOTA, IDF1 and HOTA</td></tr>
-          <tr><td>They check the heatmap only by eye</td><td class="l">Give each heatmap a score, and link it to tracking accuracy</td></tr>
+          <tr><td>Use only DeepSORT</td><td class="l">Compares DeepSORT, ByteTrack and BoT-SORT</td></tr>
+          <tr><td>Do not measure the tracking</td><td class="l">Measures it: HOTA, MOTA, IDF1</td></tr>
+          <tr><td>Check the heatmap by eye</td><td class="l">Scores each heatmap and links it to tracking</td></tr>
         </tbody>
       </table>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Literature review">
-    <span class="kicker">Chapter II · Literature review</span>
-    <h2>What Is Still Missing?</h2>
-    <div class="body">
-      <div class="cols c2">
-        <div class="card"><h3>Earlier studies</h3>
-          <ul class="small">
-            <li>Shili et al. (2024): retail heatmaps with YOLOv5 + DeepSORT</li>
-            <li>Şimşek and Tekbaş (2024): a modified YOLO–DeepSORT</li>
-            <li>Zhang et al., Aharon et al. (2022): ByteTrack and BoT-SORT, tested on pedestrian videos</li>
-          </ul></div>
-        <div class="card y"><h3>This thesis</h3>
-          <ul class="small">
-            <li>Newer trackers, used for heatmaps</li>
-            <li>Standard tracking scores</li>
-            <li>A score for every heatmap</li>
-          </ul></div>
-      </div>
+      <p class="takeaway">Does the <em>choice of tracker</em> matter for the heatmap?</p>
     </div>
   </section>
 
   <section class="slide" data-part="Methodology">
-    <span class="kicker">Chapter III · Research design</span>
+    <span class="kicker">Chapter III · Method</span>
     <h2>Only the Tracker Changes</h2>
-    <div class="body">
+    <div class="body roomy">
       <div class="pipeline">
         <div class="step"><strong>Video</strong>MOT20, MOT17</div><span class="arrow">→</span>
         <div class="step"><strong>YOLOv8n</strong>Finds the people</div><span class="arrow">→</span>
-        <div class="step swap"><strong>Tracker</strong>
-          <span class="chip"><i class="dot bg-deepsort"></i>DeepSORT</span><span class="chip"><i class="dot bg-bytetrack"></i>ByteTrack</span><span class="chip"><i class="dot bg-botsort"></i>BoT-SORT</span></div><span class="arrow">→</span>
+        <div class="step swap"><strong>Tracker</strong>One of three, or none</div><span class="arrow">→</span>
         <div class="step"><strong>Heatmap</strong>Where people walk</div><span class="arrow">→</span>
         <div class="step"><strong>Score</strong>Compare with the correct answer</div>
       </div>
-      <p class="small"><span class="name"><i class="dot bg-baseline"></i><b>No tracker</b></span> is also tested: the same detections, without a tracker. It shows how much a tracker adds.</p>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Methodology">
-    <span class="kicker">Chapter III · The three trackers</span>
-    <h2>How Each Tracker Follows a Person</h2>
-    <div class="body">
       <div class="cols c3">
-        <div class="card" style="border-left-color:var(--c-deepsort)"><h3>DeepSORT (2017)</h3><p class="small">Uses <b>movement</b> and <b>how the person looks</b>.</p></div>
-        <div class="card" style="border-left-color:var(--c-bytetrack)"><h3>ByteTrack (2022)</h3><p class="small">Uses <b>movement only</b>. Also keeps weak detections.</p></div>
-        <div class="card" style="border-left-color:var(--c-botsort)"><h3>BoT-SORT (2022)</h3><p class="small">Like ByteTrack, and also <b>corrects for camera movement</b>.</p></div>
+        <div class="card" style="border-left-color:var(--c-deepsort)"><h3>DeepSORT (2017)</h3><p class="small"><b>Movement</b> + <b>how the person looks</b></p></div>
+        <div class="card" style="border-left-color:var(--c-bytetrack)"><h3>ByteTrack (2022)</h3><p class="small"><b>Movement only</b></p></div>
+        <div class="card" style="border-left-color:var(--c-botsort)"><h3>BoT-SORT (2022)</h3><p class="small">Movement + <b>camera correction</b></p></div>
       </div>
-      <p class="small muted">Fair test: same detections and same starting score (0.25) for all. No special tuning.</p>
+      <p class="small muted"><span class="name"><i class="dot bg-baseline"></i><b>No tracker</b></span> is also tested, to see how much a tracker adds. Fair test: same detections, same starting score (0.25).</p>
     </div>
   </section>
 
   <section class="slide" data-part="Methodology">
-    <span class="kicker">Chapter III · Data and scenarios</span>
-    <h2>Test Scenarios and Data</h2>
-    <div class="body">
+    <span class="kicker">Chapter III · Data and evaluation</span>
+    <h2>Test Data and Two Scores</h2>
+    <div class="body roomy">
       <table>
-        <thead><tr><th class="l">Scenario</th><th class="l">Data</th><th>Videos</th><th>Frames</th><th>People per frame</th><th class="l">Status</th></tr></thead>
+        <thead><tr><th class="l">Scenario</th><th class="l">Data</th><th>Videos</th><th>People per frame</th><th class="l">Status</th></tr></thead>
         <tbody>
-          <tr><td>Crowded place, fixed camera</td><td class="l">MOT20-02, -03, -05</td><td>3</td><td>8,502</td><td>56 to 195</td><td class="l"><span class="status">done</span></td></tr>
-          <tr><td>Moving camera</td><td class="l">MOT17-10, -11, -13</td><td>3</td><td>2,304</td><td>10 to 20</td><td class="l"><span class="status">done</span></td></tr>
-          <tr><td>Retail shop</td><td class="l">MMPTRACK Retail</td><td>10+</td><td>-</td><td>10 to 30</td><td class="l"><span class="status wait">waiting for data</span></td></tr>
+          <tr><td>Crowded place, fixed camera</td><td class="l">MOT20</td><td>3</td><td>56 to 195</td><td class="l"><span class="status">done</span></td></tr>
+          <tr><td>Moving camera</td><td class="l">MOT17</td><td>3</td><td>10 to 20</td><td class="l"><span class="status">done</span></td></tr>
+          <tr><td>Retail shop</td><td class="l">MMPTRACK</td><td>10+</td><td>10 to 30</td><td class="l"><span class="status wait">waiting for data</span></td></tr>
         </tbody>
       </table>
-      <p class="small muted">Heatmaps are tested only with the fixed camera.</p>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Methodology">
-    <span class="kicker">Chapter III · Evaluation</span>
-    <h2>Two Questions, Two Scores</h2>
-    <div class="body">
       <div class="cols c2">
-        <div class="card"><h3>1. Is each person followed correctly?</h3>
-          <ul class="small"><li><b>HOTA</b>: from 0 to 1, higher is better</li><li>Also MOTA and IDF1</li></ul></div>
-        <div class="card y"><h3>2. Does the heatmap look like the correct one?</h3>
-          <ul class="small"><li><b>SSIM</b>: from 0 to 1, higher is more similar</li><li>Also the error in the number of people</li></ul></div>
+        <div class="card"><h3>1. Is each person followed correctly?</h3><p class="small"><b>HOTA</b>: 0 to 1, higher is better</p></div>
+        <div class="card y"><h3>2. Is the heatmap close to the correct one?</h3><p class="small"><b>SSIM</b>: 0 to 1, higher is more similar</p></div>
       </div>
-      <p class="small muted">The correct answer (ground truth) is the hand-made labels that come with the dataset.</p>
+      <p class="small muted">Correct answer = the hand-made labels in the dataset. Heatmaps are tested only with the fixed camera.</p>
     </div>
   </section>
 
   <section class="slide" data-part="Methodology">
     <span class="kicker">Chapter IV · Implementation</span>
     <h2>Changes From the Proposal</h2>
-    <div class="body">
+    <div class="body roomy airy">
       <table>
-        <thead><tr><th class="l" style="width:30%">In the proposal</th><th class="l" style="width:34%">What I did</th><th class="l">Reason</th></tr></thead>
-        <tbody class="small">
-          <tr><td>DeepSORT from Ultralytics</td><td class="l">DeepSORT from its authors' code</td><td class="l">Ultralytics does not include DeepSORT</td></tr>
-          <tr><td>Thresholds 0.5 / 0.1 / 0.6</td><td class="l">0.25 / 0.1 / 0.25 (main setting)</td><td class="l">Same starting score as the detector</td></tr>
-          <tr><td>People-count error from IDs</td><td class="l">From people per frame</td><td class="l">"No tracker" has no IDs</td></tr>
+        <thead><tr><th class="l" style="width:30%">In the proposal</th><th class="l" style="width:32%">What I did</th><th class="l">Reason</th></tr></thead>
+        <tbody>
+          <tr><td>DeepSORT from Ultralytics</td><td class="l">DeepSORT from its authors</td><td class="l">Ultralytics has no DeepSORT</td></tr>
+          <tr><td>Thresholds 0.5 / 0.1 / 0.6</td><td class="l">0.25 / 0.1 / 0.25</td><td class="l">Same starting score as the detector</td></tr>
+          <tr><td>Count error from IDs</td><td class="l">From people per frame</td><td class="l">"No tracker" has no IDs</td></tr>
           <tr><td>RTX 3050</td><td class="l">GTX 1650 SUPER</td><td class="l">The PC I used</td></tr>
         </tbody>
       </table>
@@ -277,42 +239,25 @@
         <video controls muted loop playsinline preload="metadata" poster="../video/tracking_MOT17-11.jpg" src="../video/tracking_MOT17-11.mp4"></video>
         <ul>
           <li>One <b>colour</b> = one person</li>
-          <li>Colour change = the tracker <b>lost the ID</b></li>
-          <li>People far away are missed by all</li>
+          <li>Colour change = <b>ID lost</b></li>
+          <li>Far people are missed by all</li>
         </ul>
       </div>
     </div>
   </section>
 
   <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Tracking, crowded place (MOT20)</span>
-    <h2>Crowded Place: BoT-SORT Is Slightly Better</h2>
-    <div class="body">
-      <div class="bars" id="b-crowded"></div>
-      <span class="scale-note">HOTA over all three videos. Bars go from 0 to 0.4.</span>
-      <div id="tb-crowded"></div>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Tracking, moving camera (MOT17)</span>
-    <h2>Moving Camera: ByteTrack Is the Lowest</h2>
-    <div class="body">
-      <div class="bars" id="b-moving"></div>
-      <span class="scale-note">HOTA over all three videos. Bars go from 0 to 0.4.</span>
-      <div id="tb-moving"></div>
-      <p class="small muted">ByteTrack does not correct for camera movement.</p>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Types of error</span>
-    <h2>The Main Error: People Are Not Detected</h2>
-    <div class="body">
+    <span class="kicker">Chapter V · Tracking results</span>
+    <h2>BoT-SORT Leads, but Most People Are Missed</h2>
+    <div class="body roomy">
+      <div class="cols c2" style="gap:56px">
+        <div class="stack"><h3>Tracking score (HOTA), crowded place</h3><div class="bars" id="b-crowded"></div></div>
+        <div class="stack"><h3>Tracking score (HOTA), moving camera</h3><div class="bars" id="b-moving"></div></div>
+      </div>
       <div class="bigs">
-        <div class="big"><b>19–22%</b><span>of people are found in the crowded place</span></div>
-        <div class="big"><b>42–45%</b><span>are found with the moving camera</span></div>
-        <div class="big"><b>86–96%</b><span>of the boxes that are drawn are correct</span></div>
+        <div class="big"><b>19–22%</b><span>of people found, crowded place</span></div>
+        <div class="big"><b>42–45%</b><span>of people found, moving camera</span></div>
+        <div class="big"><b>86–96%</b><span>of the drawn boxes are correct</span></div>
       </div>
       <p class="takeaway">The boxes are right, but <em>most people get no box at all</em>.</p>
     </div>
@@ -325,65 +270,44 @@
       <div class="media">
         <video controls muted loop playsinline preload="metadata" poster="../video/heatmap_MOT20-02_640.jpg" src="../video/heatmap_MOT20-02_640.mp4"></video>
         <ul>
-          <li>Sped-up video of 2,782 frames</li>
           <li>The three heatmaps look almost the same</li>
-          <li>All miss the crowd far away</li>
+          <li>All miss the far crowd</li>
         </ul>
       </div>
     </div>
   </section>
 
   <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Heatmap quality, crowded place</span>
+    <span class="kicker">Chapter V · Heatmap results</span>
     <h2>A Tracker Improves the Heatmap Only a Little</h2>
     <div class="body">
-      <div class="bars" id="b-heat"></div>
-      <span class="scale-note">SSIM: how similar the heatmap is to the correct one. Bars go from 0 to 1.</span>
+      <div class="cols c-wide">
+        <div class="stack">
+          <h3>Heatmap score (SSIM), crowded place</h3>
+          <div class="bars" id="b-heat"></div>
+          <ul class="small">
+            <li>A heatmap needs <b>where people are</b>, not who they are</li>
+            <li>A tracker mostly decides <b>who is who</b></li>
+          </ul>
+        </div>
+        <figure><img src="../figures/f_hota_ssim.png" alt="HOTA against SSIM for every video and tracker"><figcaption>Videos with better tracking also give better heatmaps</figcaption></figure>
+      </div>
       <p class="takeaway" id="heat-take"></p>
     </div>
   </section>
 
   <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter VI · Discussion</span>
-    <h2>Why So Little? A Heatmap Does Not Need IDs</h2>
-    <div class="body">
-      <div class="cols c-wide">
-        <ul>
-          <li>A heatmap asks <b>where people are</b>, not who they are</li>
-          <li>A tracker mostly decides <b>who is who</b></li>
-          <li>So the boxes stay almost the same</li>
-          <li>Easier videos score better on both tracking and heatmap</li>
-        </ul>
-        <figure><img src="../figures/f_hota_ssim.png" alt="HOTA against SSIM for every video and tracker"><figcaption>Tracking score (HOTA) and heatmap score (SSIM) for each video</figcaption></figure>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Statistical test</span>
-    <h2>Three Videos Are Too Few to Be Sure</h2>
-    <div class="body">
-      <div class="bigs">
-        <div class="big"><b>3</b><span>videos per scenario</span></div>
-        <div class="big"><b>0.25</b><span>smallest p-value a pair test can give with 3 videos</span></div>
-        <div class="big"><b>0.05</b><span>the usual limit to call a difference real</span></div>
-      </div>
-      <p class="takeaway">BoT-SORT scores highest, but <em>this is not yet statistically confirmed</em>.</p>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Effect of the thresholds</span>
-    <h2>The Ranking Changes With the Settings</h2>
-    <div class="body">
+    <span class="kicker">Chapter V · Statistics and settings</span>
+    <h2>The Ranking Is Not Yet Certain</h2>
+    <div class="body roomy">
       <div class="cols c-wide">
         <img class="fig" src="../figures/f_presets.png" alt="HOTA of the three trackers under three threshold settings">
-        <ul>
-          <li>With the proposal settings, DeepSORT is first</li>
-          <li>Why: 81% of detections score below 0.6</li>
-          <li>ByteTrack and BoT-SORT then ignore them</li>
-        </ul>
+        <div class="stack">
+          <div class="card"><h3>It changes with the settings</h3><p class="small">With the proposal settings (Table 3.6), DeepSORT is first: 81% of detections score below 0.6, so ByteTrack and BoT-SORT ignore them.</p></div>
+          <div class="card y"><h3>Three videos are too few</h3><p class="small">Smallest p-value possible with 3 videos: <b>0.25</b>. Needed: <b>0.05</b>.</p></div>
+        </div>
       </div>
+      <p class="takeaway">BoT-SORT scores highest, but <em>this is not yet statistically confirmed</em>.</p>
     </div>
   </section>
 
@@ -393,69 +317,42 @@
     <div class="body">
       <div class="cols c3">
         <figure><img src="../heatmaps/MOT20-05_640_gt.jpg" alt="Correct heatmap of MOT20-05"><figcaption><i class="dot bg-baseline"></i>Correct heatmap</figcaption></figure>
-        <figure><img src="../heatmaps/MOT20-05_640_botsort.jpg" alt="BoT-SORT heatmap at 640 pixels"><figcaption><i class="dot bg-botsort"></i>BoT-SORT, small image (640 px)</figcaption></figure>
-        <figure><img src="../heatmaps/MOT20-05_1280_botsort.jpg" alt="BoT-SORT heatmap at 1280 pixels"><figcaption><i class="dot bg-botsort"></i>BoT-SORT, big image (1280 px)</figcaption></figure>
+        <figure><img src="../heatmaps/MOT20-05_640_botsort.jpg" alt="BoT-SORT heatmap at 640 pixels"><figcaption><i class="dot bg-botsort"></i>Small image (640 px)</figcaption></figure>
+        <figure><img src="../heatmaps/MOT20-05_1280_botsort.jpg" alt="BoT-SORT heatmap at 1280 pixels"><figcaption><i class="dot bg-botsort"></i>Big image (1280 px)</figcaption></figure>
       </div>
       <div id="tb-imgsz"></div>
     </div>
   </section>
 
   <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Speed</span>
-    <h2>ByteTrack Is the Fastest Tracker</h2>
-    <div class="body">
-      <div class="bars" id="b-fps"></div>
-      <span class="scale-note">Frames per second in the crowded place. Bars go from 0 to 80. GTX 1650 SUPER; trackers on the CPU.</span>
-      <p class="small muted">DeepSORT is slow because it also checks how each person looks. The videos themselves are 25 frames per second.</p>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter VI · Practical use</span>
-    <h2>What This Means for a Shop</h2>
-    <div class="body">
+    <span class="kicker">Chapter VI · Speed and practical use</span>
+    <h2>Speed, and What This Means for a Shop</h2>
+    <div class="body roomy">
+      <div class="stack"><h3>Frames per second, crowded place</h3><div class="bars" id="b-fps"></div></div>
       <div class="cols c3">
-        <div class="card"><h3>1. Improve detection first</h3><p class="small">A bigger image or a better detector helps the most.</p></div>
-        <div class="card y"><h3>2. Check the settings</h3><p class="small">Values from papers may not fit your detector.</p></div>
-        <div class="card"><h3>3. Choose the tracker by need</h3><p class="small">ByteTrack for speed. BoT-SORT if the camera moves.</p></div>
+        <div class="card"><h3>1. Improve detection first</h3><p class="small">A bigger image helps the most.</p></div>
+        <div class="card y"><h3>2. Check the settings</h3><p class="small">Paper values may not fit your detector.</p></div>
+        <div class="card"><h3>3. Pick the tracker by need</h3><p class="small">ByteTrack for speed. BoT-SORT if the camera moves.</p></div>
       </div>
     </div>
   </section>
 
   <section class="slide" data-part="Conclusions">
-    <span class="kicker">Chapter VI · Limitations</span>
-    <h2>Limits of This Study</h2>
-    <div class="body">
-      <div class="cols c2">
-        <div class="card"><h3>Only three videos per scenario</h3><p class="small">Too few for a statistical test.</p></div>
-        <div class="card y"><h3>No shop video yet</h3><p class="small">The MOT videos show streets and public places.</p></div>
-        <div class="card y"><h3>One detector</h3><p class="small">YOLOv8n as it is, with no extra training.</p></div>
-        <div class="card"><h3>Camera view, not floor plan</h3><p class="small">Far areas look smaller in the heatmap.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Conclusions">
-    <span class="kicker">Chapter VI · Conclusions</span>
-    <h2>Conclusions So Far</h2>
-    <div class="body">
-      <ol>
-        <li><b>BoT-SORT tracks best</b> in both scenarios, but the difference is small.</li>
-        <li><b>The main problem is detection.</b> In the crowded place, only about 1 in 5 people is found.</li>
-        <li><b>A tracker improves the heatmap only a little.</b> A bigger detector image helps about ten times more.</li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="slide" data-part="Conclusions">
-    <span class="kicker">Chapter VI · Suggestions</span>
-    <h2>Next Steps</h2>
-    <div class="body">
-      <div class="cols c2">
-        <div class="card"><h3>Before the final defence</h3>
-          <ul class="small"><li>Run the retail shop test (10+ videos)</li><li>Repeat the statistical test</li></ul></div>
-        <div class="card y"><h3>Future work</h3>
-          <ul class="small"><li>A better detector or a bigger image</li><li>Heatmap on the floor plan</li><li>How long people stay, and how many visit</li></ul></div>
+    <span class="kicker">Chapter VI · Conclusions and suggestions</span>
+    <h2>Conclusions, Limits and Next Steps</h2>
+    <div class="body roomy">
+      <div class="cols c-wide">
+        <ol>
+          <li><b>BoT-SORT tracks best</b>, but only by a little.</li>
+          <li><b>Detection is the main problem.</b> In the crowd, only about 1 in 5 people is found.</li>
+          <li><b>The tracker changes the heatmap only a little.</b> A bigger image helps about ten times more.</li>
+        </ol>
+        <div class="stack">
+          <div class="card"><h3>Limits</h3>
+            <ul class="small"><li>Three videos per scenario</li><li>No shop video yet</li><li>One detector, camera view only</li></ul></div>
+          <div class="card y"><h3>Next steps</h3>
+            <ul class="small"><li>Run the shop test (10+ videos)</li><li>Repeat the statistical test</li><li>Try a better detector</li></ul></div>
+        </div>
       </div>
     </div>
   </section>
@@ -533,12 +430,8 @@
       rows.map((r) => '<tr>' + r.map((c) => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</tbody></table>';
   }
 
-  /* main slides show HOTA as bars plus the two other metrics named in the objectives; the rest is on a backup slide */
-  ['crowded', 'moving'].forEach((s) => {
-    const t = D.tracking['640'][s];
-    bars('b-' + s, TRACKERS, (k) => t[k].HOTA, 0.4, f3);
-    table('tb-' + s, ['Other scores', 'MOTA', 'IDF1', 'Times an ID was lost'], TRACKERS.map((k) => [label(k), f3(t[k].MOTA), f3(t[k].IDF1), int(t[k].IDSW)]));
-  });
+  /* the main slide shows HOTA as bars for both scenarios; every other tracking score is on a backup slide */
+  ['crowded', 'moving'].forEach((s) => bars('b-' + s, TRACKERS, (k) => D.tracking['640'][s][k].HOTA, 0.4, f3));
   const SCENE = { crowded: 'Crowded place', moving: 'Moving camera' };
   table('tb-track-all', ['Scenario', 'Tracker', 'HOTA', 'DetA', 'AssA', 'MOTA', 'IDF1', 'ID switches', 'Missed people', 'Wrong boxes'],
     ['crowded', 'moving'].flatMap((s) => TRACKERS.map((k, i) => {
@@ -555,7 +448,7 @@
     CONFIGS.map((k) => [label(k)].concat(['640', '1280'].flatMap((r) => [f3(D.heat[r][k].SSIM), f3(D.heat[r][k].KL), f3(D.heat[r][k].JS), f1(D.heat[r][k].count_MAPE)]))));
 
   const t12 = D.tracking['1280'].crowded, pct = (v) => Math.round(v * 100) + '%';
-  table('tb-imgsz', ['BoT-SORT', 'People found', 'Tracking score (HOTA)', 'Heatmap score (SSIM)', 'People-count error'], [
+  table('tb-imgsz', ['BoT-SORT', 'People found', 'Tracking (HOTA)', 'Heatmap (SSIM)', 'Count error'], [
     ['Small image (640 px)', pct(tc.botsort.Recall), f3(tc.botsort.HOTA), f3(D.heat['640'].botsort.SSIM), f1(D.heat['640'].botsort.count_MAPE) + '%'],
     ['Big image (1280 px)', pct(t12.botsort.Recall), f3(t12.botsort.HOTA), f3(D.heat['1280'].botsort.SSIM), f1(D.heat['1280'].botsort.count_MAPE) + '%'],
   ]);
