@@ -400,6 +400,7 @@ window.SITE_DATA = {
  "videos": [
   "heatmap_MOT20-02_1280.mp4",
   "heatmap_MOT20-02_640.mp4",
+  "live_run_MOT20-02.mp4",
   "tracking_MOT17-11.mp4"
  ]
 };

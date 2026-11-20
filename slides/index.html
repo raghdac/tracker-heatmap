@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<link rel="icon" href="https://avatars.githubusercontent.com/u/31491351?s=64&v=4">
 <title>Results Seminar Slides</title>
 <style>
   /* Look of the UGM slide template used for the proposal seminar: white slides, navy titles, yellow rule, navy footer bar.
@@ -105,6 +106,12 @@
   .fig { max-height: 400px; width: auto; max-width: 100%; justify-self: center; border: 1px solid var(--rule); border-radius: 6px; }
   .status { font-size: 14px; padding: 2px 8px; border-radius: 4px; background: var(--tint); color: var(--navy); white-space: nowrap; font-weight: 700; }
   .status.wait { background: #fff0c2; color: #6b4a00; }
+  /* demo cue: a picture of the demo page; a click opens it in a new tab (full link, so it also works from the PDF) */
+  .demo { position: relative; display: block; border-radius: 6px; overflow: hidden; }
+  .demo img { width: 100%; display: block; }
+  .demo .go { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--yellow); color: var(--navy);
+              font-weight: 700; font-size: 26px; padding: 14px 28px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); white-space: nowrap; }
+  .demo .where { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(0, 40, 66, 0.86); color: #ffffff; font-size: 16px; padding: 8px 14px; }
   .qr { display: flex; align-items: center; gap: 22px; }
   .qr svg { width: 150px; height: 150px; border: 1px solid var(--rule); border-radius: 6px; }
   .link { font-size: 18px; color: var(--navy); font-weight: 700; }
@@ -232,15 +239,16 @@
   </section>
 
   <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Demo, MOT17-11</span>
-    <h2>Same Video, Three Trackers</h2>
+    <span class="kicker">Chapter V · Live demo</span>
+    <h2>Live Demo: The Code Running, Then Tracking</h2>
     <div class="body">
       <div class="media">
-        <video controls muted loop playsinline preload="metadata" poster="../video/tracking_MOT17-11.jpg" src="../video/tracking_MOT17-11.mp4"></video>
+        <a class="demo" href="https://raghdac.github.io/tracker-heatmap/results/#live" target="_blank" rel="noopener"><img src="../video/live_run_MOT20-02.jpg" alt="The demo page: the code running"><span class="go">Open the demo page ↗</span><span class="where">raghdac.github.io/tracker-heatmap/results</span></a>
         <ul>
+          <li>First: the <b>code running</b> on my PC</li>
+          <li>Then: same video, three trackers</li>
           <li>One <b>colour</b> = one person</li>
           <li>Colour change = <b>ID lost</b></li>
-          <li>Far people are missed by all</li>
         </ul>
       </div>
     </div>
@@ -264,14 +272,15 @@
   </section>
 
   <section class="slide" data-part="Results and discussion">
-    <span class="kicker">Chapter V · Demo, MOT20-02</span>
-    <h2>From Tracks to Heatmaps</h2>
+    <span class="kicker">Chapter V · Live demo</span>
+    <h2>Live Demo: Heatmaps</h2>
     <div class="body">
       <div class="media">
-        <video controls muted loop playsinline preload="metadata" poster="../video/heatmap_MOT20-02_640.jpg" src="../video/heatmap_MOT20-02_640.mp4"></video>
+        <a class="demo" href="https://raghdac.github.io/tracker-heatmap/results/#heatmaps" target="_blank" rel="noopener"><img src="../video/heatmap_MOT20-02_640.jpg" alt="The demo page: heatmaps"><span class="go">Open the demo page ↗</span><span class="where">raghdac.github.io/tracker-heatmap/results</span></a>
         <ul>
           <li>The three heatmaps look almost the same</li>
           <li>All miss the far crowd</li>
+          <li>Switch the image size to <b>1280 px</b></li>
         </ul>
       </div>
     </div>
@@ -394,6 +403,39 @@
     <h2>All Heatmap Scores</h2>
     <div class="body"><div id="tb-heat-all"></div>
       <p class="small muted">Averages weighted by the number of frames. SSIM: higher is better. KL, JS and count error: lower is better.</p></div>
+  </section>
+
+  <section class="slide" data-part="Backup">
+    <span class="kicker">Backup · If the demo page does not open</span>
+    <h2>The Code Running (Recording)</h2>
+    <div class="body">
+      <div class="media">
+        <video controls muted loop playsinline preload="metadata" poster="../video/live_run_MOT20-02.jpg" src="../video/live_run_MOT20-02.mp4"></video>
+        <ul><li>Left: the loop and what it prints</li><li>Right: the result, frame by frame</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Backup">
+    <span class="kicker">Backup · If the demo page does not open</span>
+    <h2>Same Video, Three Trackers</h2>
+    <div class="body">
+      <div class="media">
+        <video controls muted loop playsinline preload="metadata" poster="../video/tracking_MOT17-11.jpg" src="../video/tracking_MOT17-11.mp4"></video>
+        <ul><li>One <b>colour</b> = one person</li><li>Colour change = <b>ID lost</b></li><li>Far people are missed by all</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Backup">
+    <span class="kicker">Backup · If the demo page does not open</span>
+    <h2>From Tracks to Heatmaps</h2>
+    <div class="body">
+      <div class="media">
+        <video controls muted loop playsinline preload="metadata" poster="../video/heatmap_MOT20-02_640.jpg" src="../video/heatmap_MOT20-02_640.mp4"></video>
+        <ul><li>The three heatmaps look almost the same</li><li>All miss the far crowd</li></ul>
+      </div>
+    </div>
   </section>
 
   <section class="slide" data-part="Backup">
