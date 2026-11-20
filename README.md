@@ -1,6 +1,6 @@
 # Tracker Heatmap Benchmark
 
-Interactive results page for the undergraduate thesis "A Comparative Analysis of YOLO and DeepSORT-based
+Results page (`results/`) and seminar slides (`slides/`) for the undergraduate thesis "A Comparative Analysis of YOLO and DeepSORT-based
 Tracking Combinations for Customer Movement Heatmap in Retail Environments" (R. Raghda Hassa Parardhya Cornika,
 Electronics and Instrumentation, Universitas Gadjah Mada).
 
